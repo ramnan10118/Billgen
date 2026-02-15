@@ -55,26 +55,43 @@ const AccessGate = () => {
         <div className="access-grid" />
       </div>
       
-      <motion.div 
-        className="access-card"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-      >
+      <div className="access-card">
         <div className="access-header">
-          <motion.div 
-            className="access-icon"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+          <div className="access-logo-diamond">
+            <span className="access-logo-icon">⚡</span>
+          </div>
+          <motion.h1 
+            className="access-title"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.4 }}
           >
-            📄
-          </motion.div>
-          <h1>BillGen</h1>
-          <p>Quick bill generation for monthly reimbursements</p>
+            Bill<span className="access-title-accent">Gen</span>
+          </motion.h1>
+          <motion.span 
+            className="access-version"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.9, duration: 0.3 }}
+          >
+            SYS V.1.0 // ONLINE
+          </motion.span>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.1, duration: 0.3 }}
+          >
+            Document generation system
+          </motion.p>
         </div>
         
-        <form onSubmit={handleSubmit} className="access-form">
+        <motion.form 
+          onSubmit={handleSubmit} 
+          className="access-form"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.3, duration: 0.4 }}
+        >
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
             <input
@@ -112,12 +129,17 @@ const AccessGate = () => {
               'Continue'
             )}
           </button>
-        </form>
+        </motion.form>
         
-        <p className="access-note">
+        <motion.p 
+          className="access-note"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 0.3 }}
+        >
           Access is invite-only. Contact the admin to get added.
-        </p>
-      </motion.div>
+        </motion.p>
+      </div>
     </div>
   );
 };
