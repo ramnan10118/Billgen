@@ -1,4 +1,4 @@
-/* Home Page Styles */
+/* Home Page Styles - Cyberpunk */
 
 .home-page {
   max-width: 900px;
@@ -13,11 +13,26 @@
 
 .home-header h1 {
   margin-bottom: var(--space-xs);
+  font-size: 2rem;
+  letter-spacing: 0.2em;
+}
+
+.home-header h1::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 28px;
+  background: #06b6d4;
+  box-shadow: 0 0 15px #06b6d4;
+  margin-right: 12px;
+  vertical-align: middle;
 }
 
 .home-header p {
   color: var(--text-muted);
-  font-size: 1.0625rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
 }
 
 /* Profile Nudge */
@@ -26,10 +41,21 @@
   align-items: center;
   gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
+  border: 1px solid rgba(236, 72, 153, 0.3);
   margin-bottom: var(--space-xl);
+  position: relative;
+}
+
+.profile-nudge::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #ec4899;
+  box-shadow: 0 0 10px #ec4899;
 }
 
 .nudge-icon {
@@ -43,9 +69,12 @@
 
 .nudge-content strong {
   display: block;
-  color: var(--text-primary);
-  font-size: 0.9375rem;
+  color: var(--accent-secondary);
+  font-size: 0.875rem;
   margin-bottom: 2px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .nudge-content p {
@@ -66,18 +95,39 @@
   align-items: center;
   gap: var(--space-md);
   padding: var(--space-lg);
-  background: var(--bg-card);
+  background: linear-gradient(135deg, #1e2029 0%, #111216 100%);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
   text-decoration: none;
   transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 1px 1px 0px rgba(255, 255, 255, 0.05),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.3);
+}
+
+.template-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.template-card:hover::before {
+  opacity: 1;
 }
 
 .template-card:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border-color-light);
+  border-color: rgba(6, 182, 212, 0.4);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow:
+    0 0 20px rgba(6, 182, 212, 0.15),
+    inset 1px 1px 0px rgba(255, 255, 255, 0.05);
 }
 
 .template-icon {
@@ -87,8 +137,8 @@
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  background: color-mix(in srgb, var(--accent-color) 15%, transparent);
-  border-radius: var(--radius-md);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.2);
   flex-shrink: 0;
 }
 
@@ -98,19 +148,21 @@
 }
 
 .template-info h3 {
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 2px;
+  letter-spacing: 0.05em;
 }
 
 .template-info p {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: var(--font-mono);
 }
 
 .template-arrow {
@@ -119,11 +171,14 @@
   opacity: 0;
   transform: translateX(-4px);
   transition: all var(--transition-fast);
+  font-family: var(--font-mono);
 }
 
 .template-card:hover .template-arrow {
   opacity: 1;
   transform: translateX(0);
+  color: #06b6d4;
+  text-shadow: 0 0 5px rgba(6, 182, 212, 0.5);
 }
 
 /* Footer */
@@ -133,8 +188,10 @@
 }
 
 .home-footer p {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
 }
 
 /* Responsive */

@@ -57,7 +57,7 @@ const AccessDenied = () => (
     <div className="access-denied-card">
       <span className="icon">🚫</span>
       <h1>Access Revoked</h1>
-      <p>Your access to BillGen has been revoked. Please contact the admin to get re-added.</p>
+      <p>&gt; Your access to BillGen has been revoked. Contact admin to get re-added.</p>
       <a href="/" className="btn btn-primary">Try Again</a>
     </div>
   </div>
@@ -66,6 +66,12 @@ const AccessDenied = () => (
 function App() {
   return (
     <BrowserRouter>
+      {/* Cyberpunk grid background */}
+      <div className="cyber-grid-bg" />
+      {/* Scanline overlay */}
+      <div className="cyber-scanline" />
+      <div className="cyber-scan-beam" />
+      
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<AccessGate />} />

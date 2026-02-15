@@ -1,4 +1,4 @@
-/* Access Gate Styles */
+/* Access Gate Styles - Cyberpunk */
 
 .access-gate {
   min-height: 100vh;
@@ -23,11 +23,9 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(59, 130, 246, 0.08) 0%,
-    transparent 50%
-  );
+  background:
+    radial-gradient(circle at 30% 30%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(236, 72, 153, 0.06) 0%, transparent 40%);
   animation: rotate 30s linear infinite;
 }
 
@@ -39,23 +37,48 @@
 .access-grid {
   position: absolute;
   inset: 0;
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 60px 60px;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
   mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
 }
 
 /* Card */
 .access-card {
   width: 100%;
-  max-width: 400px;
-  background: var(--bg-card);
+  max-width: 420px;
+  background: linear-gradient(135deg, #1e2029 0%, #111216 100%);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
   padding: var(--space-2xl);
   position: relative;
   z-index: 1;
+  box-shadow:
+    inset 1px 1px 0px rgba(255, 255, 255, 0.05),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.3),
+    0 20px 60px -15px rgba(0, 0, 0, 0.8);
+}
+
+.access-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #06b6d4, transparent);
+  box-shadow: 0 0 10px #06b6d4;
+}
+
+.access-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #ec4899, transparent);
+  opacity: 0.5;
 }
 
 .access-header {
@@ -64,19 +87,24 @@
 }
 
 .access-icon {
-  font-size: 3rem;
+  font-size: 2.5rem;
   margin-bottom: var(--space-md);
   display: block;
+  filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.5));
 }
 
 .access-header h1 {
-  font-size: 1.75rem;
+  font-size: 2rem;
   margin-bottom: var(--space-xs);
+  letter-spacing: 0.3em;
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.7), 0 0 20px rgba(6, 182, 212, 0.5);
 }
 
 .access-header p {
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
 }
 
 /* Form */
@@ -86,54 +114,121 @@
   gap: var(--space-lg);
 }
 
-.form-group {
+.access-gate .form-group {
   display: flex;
   flex-direction: column;
 }
 
-.form-group label {
+.access-gate .form-group label {
   margin-bottom: var(--space-sm);
 }
 
-.form-group input {
+.access-gate .form-group input {
   height: 48px;
-  font-size: 1rem;
+  font-size: 0.875rem;
 }
 
 .access-btn {
   width: 100%;
   height: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.access-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.access-btn:hover::after {
+  left: 100%;
 }
 
 /* Error Message */
 .error-message {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #FCA5A5;
+  background: rgba(236, 72, 153, 0.1);
+  border: 1px solid rgba(236, 72, 153, 0.3);
+  color: #f9a8d4;
   padding: var(--space-md);
-  border-radius: var(--radius-sm);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
+  font-family: var(--font-mono);
+  position: relative;
+}
+
+.error-message::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #ec4899;
+  box-shadow: 0 0 8px #ec4899;
 }
 
 /* Note */
 .access-note {
   text-align: center;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: var(--space-lg);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
 }
 
 /* Spinner */
 .spinner {
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(6, 182, 212, 0.3);
+  border-top-color: #06b6d4;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Access Denied - Cyberpunk */
+.access-denied {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.access-denied-card {
+  text-align: center;
+  background: linear-gradient(135deg, #1e2029 0%, #111216 100%);
+  border: 1px solid rgba(236, 72, 153, 0.3);
+  padding: var(--space-2xl);
+  max-width: 420px;
+  box-shadow: 0 0 30px rgba(236, 72, 153, 0.1);
+}
+
+.access-denied-card .icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: var(--space-md);
+}
+
+.access-denied-card h1 {
+  color: #ec4899;
+  text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+  margin-bottom: var(--space-md);
+}
+
+.access-denied-card p {
+  margin-bottom: var(--space-xl);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
 }

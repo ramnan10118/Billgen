@@ -18,7 +18,7 @@ const Home = () => {
           animate={{ opacity: 1, y: 0 }}
         >
           <h1>Generate a Bill</h1>
-          <p>Select a template to get started</p>
+          <p>&gt; Select a template to get started</p>
         </motion.div>
         
         {!isProfileComplete() && (
@@ -28,13 +28,13 @@ const Home = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <span className="nudge-icon">💡</span>
+            <span className="nudge-icon">⚠</span>
             <div className="nudge-content">
-              <strong>Complete your profile</strong>
-              <p>Auto-fill your name and address on every bill</p>
+              <strong>Profile Incomplete</strong>
+              <p>Configure your profile to auto-fill bill data</p>
             </div>
-            <Link to="/settings" className="btn btn-primary btn-sm">
-              Set up now
+            <Link to="/settings" className="btn btn-danger btn-sm">
+              Configure
             </Link>
           </motion.div>
         )}
@@ -51,17 +51,14 @@ const Home = () => {
                 to={`/generate/${template.id}`}
                 className="template-card"
               >
-                <div 
-                  className="template-icon"
-                  style={{ '--accent-color': template.color }}
-                >
+                <div className="template-icon">
                   {template.icon}
                 </div>
                 <div className="template-info">
                   <h3>{template.name}</h3>
                   <p>{template.description}</p>
                 </div>
-                <div className="template-arrow">→</div>
+                <div className="template-arrow">&gt;</div>
               </Link>
             </motion.div>
           ))}
@@ -69,7 +66,7 @@ const Home = () => {
         
         <div className="home-footer">
           <p>
-            Templates are pre-designed. You'll customize your design later.
+            // Templates are pre-designed. Customize parameters on generation.
           </p>
         </div>
       </div>

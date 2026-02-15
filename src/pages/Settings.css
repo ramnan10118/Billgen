@@ -1,4 +1,4 @@
-/* Settings Page Styles */
+/* Settings Page Styles - Cyberpunk */
 
 .settings-page {
   max-width: 700px;
@@ -6,10 +6,25 @@
 }
 
 .settings-container {
-  background: var(--bg-card);
+  background: linear-gradient(135deg, #1e2029 0%, #111216 100%);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow:
+    inset 1px 1px 0px rgba(255, 255, 255, 0.05),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.3),
+    0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.settings-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.5), transparent);
+  z-index: 1;
 }
 
 /* Onboarding Banner */
@@ -18,8 +33,20 @@
   align-items: flex-start;
   gap: var(--space-md);
   padding: var(--space-lg);
-  background: rgba(59, 130, 246, 0.1);
-  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  background: rgba(6, 182, 212, 0.08);
+  border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+  position: relative;
+}
+
+.onboarding-banner::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #06b6d4;
+  box-shadow: 0 0 10px #06b6d4;
 }
 
 .onboarding-icon {
@@ -29,12 +56,16 @@
 
 .onboarding-banner strong {
   display: block;
-  color: var(--text-primary);
+  color: #06b6d4;
   margin-bottom: var(--space-xs);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
 }
 
 .onboarding-banner p {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
   margin: 0;
 }
@@ -46,10 +77,26 @@
 
 .settings-header h1 {
   margin-bottom: var(--space-xs);
+  font-size: 1.5rem;
+  letter-spacing: 0.15em;
+}
+
+.settings-header h1::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 22px;
+  background: #a855f7;
+  box-shadow: 0 0 10px #a855f7;
+  margin-right: 12px;
+  vertical-align: middle;
 }
 
 .settings-header p {
   color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
 }
 
 /* Form */
@@ -74,13 +121,15 @@
 
 .form-group label {
   margin-bottom: var(--space-sm);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .form-hint {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: var(--text-muted);
   margin-top: var(--space-xs);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
 }
 
 /* Actions */
@@ -96,23 +145,37 @@
 .check-icon {
   color: var(--accent-success);
   font-weight: bold;
+  text-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
 }
 
 /* Note */
 .settings-note {
   padding: var(--space-lg) var(--space-xl);
-  background: var(--bg-secondary);
+  background: rgba(0, 0, 0, 0.3);
   border-top: 1px solid var(--border-color);
+  position: relative;
+}
+
+.settings-note::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(100, 116, 139, 0.3), transparent);
 }
 
 .settings-note p {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   margin: 0;
+  font-family: var(--font-mono);
+  letter-spacing: 0.03em;
 }
 
 .settings-note strong {
-  color: var(--text-secondary);
+  color: var(--accent-warning);
 }
 
 /* Responsive */

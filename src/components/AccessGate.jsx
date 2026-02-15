@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { useAccessStore, useProfileStore } from '../context/store';
+import { useAccessStore } from '../context/store';
 import { validateEmailAccess, isValidEmail } from '../utils/accessValidation';
 import './AccessGate.css';
 
@@ -12,7 +12,6 @@ const AccessGate = () => {
   
   const navigate = useNavigate();
   const { setAccess, isWithinGracePeriod, email: cachedEmail } = useAccessStore();
-  const { isProfileComplete } = useProfileStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,12 +29,7 @@ const AccessGate = () => {
       
       if (result.valid === true) {
         setAccess(email);
-        // Redirect based on profile completion
-        if (isProfileComplete()) {
-          navigate('/home');
-        } else {
-          navigate('/settings', { state: { showOnboarding: true } });
-        }
+        navigate('/home');
       } else if (result.valid === false) {
         setError('Access denied. Your email is not on the approved list. Please contact the admin.');
       } else if (result.error) {
