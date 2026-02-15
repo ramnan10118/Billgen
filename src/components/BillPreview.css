@@ -1,0 +1,1172 @@
+/* Bill Preview Styles */
+
+/* Custom Fonts */
+@font-face {
+  font-family: 'Montreal';
+  src: url('/fonts/Montreal-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montreal';
+  src: url('/fonts/Montreal-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Avenir';
+  src: url('/fonts/Avenir-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Avenir';
+  src: url('/fonts/Avenir-Medium.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+.bill-preview {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1a1a1a;
+  background: white;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.bill-preview-phonepe {
+  background: #000;
+  width: 420px;
+}
+
+.bill-preview-error {
+  padding: 40px;
+  text-align: center;
+  color: #666;
+}
+
+/* ============================================
+   DRIVER SALARY RECEIPT
+   ============================================ */
+.template-driver {
+  padding: 40px;
+  min-height: 600px;
+  background: white;
+}
+
+.driver-title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 32px 0;
+  color: #1a1a1a;
+}
+
+.driver-declaration {
+  margin-bottom: 32px;
+  line-height: 1.8;
+}
+
+.driver-declaration p {
+  margin: 0;
+  text-align: justify;
+}
+
+.driver-declaration strong {
+  color: #000;
+}
+
+.driver-info-grid {
+  margin-bottom: 24px;
+}
+
+.driver-info-row {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.driver-info-row:last-child {
+  border-bottom: none;
+}
+
+.driver-label {
+  width: 180px;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.driver-value {
+  flex: 1;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.driver-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 32px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #1a1a1a;
+}
+
+.driver-received {
+  margin-top: 32px;
+  padding: 20px;
+  background: #f8f8f8;
+  border-radius: 4px;
+}
+
+.driver-received p {
+  margin: 0;
+  line-height: 1.8;
+}
+
+.driver-received strong {
+  color: #000;
+}
+
+.driver-stamp-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 40px;
+  padding-top: 24px;
+}
+
+.driver-signature {
+  text-align: center;
+}
+
+.driver-signature .signature-line {
+  width: 180px;
+  border-bottom: 1px solid #1a1a1a;
+  margin-bottom: 8px;
+  height: 50px;
+}
+
+.driver-signature p {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+
+.driver-stamp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.revenue-stamp-img {
+  width: 120px;
+  height: auto;
+  opacity: 0.95;
+}
+
+/* ============================================
+   PHONEPE PAYMENT RECEIPT
+   ============================================ */
+.template-phonepe {
+  width: 420px;
+  background: #000;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #fff;
+  overflow: hidden;
+}
+
+/* Green Header */
+.pp-green-header {
+  background: #2E7D32;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pp-back {
+  font-size: 28px;
+  color: #fff;
+  font-weight: 300;
+}
+
+.pp-header-center {
+  flex: 1;
+  text-align: center;
+}
+
+.pp-success-text {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.pp-header-time {
+  display: block;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Paid To Section */
+.pp-paid-section {
+  background: #000;
+  padding: 16px 20px;
+}
+
+.pp-paid-label {
+  display: block;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.pp-paid-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pp-paid-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.pp-paid-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pp-paid-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.pp-paid-phone {
+  font-size: 14px;
+  color: #888;
+}
+
+.pp-paid-amount {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Banking Name Row */
+.pp-banking-row {
+  background: #000;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid #222;
+}
+
+.pp-banking-label {
+  font-size: 14px;
+  color: #888;
+}
+
+.pp-banking-value {
+  font-size: 14px;
+  color: #888;
+}
+
+.pp-banking-check {
+  width: 18px;
+  height: 18px;
+  background: #2E7D32;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #fff;
+  margin-left: 4px;
+}
+
+/* Payment Details Row */
+.pp-payment-details {
+  background: #000;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid #222;
+}
+
+.pp-details-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.pp-details-text {
+  flex: 1;
+  font-size: 15px;
+  color: #fff;
+}
+
+.pp-details-expand {
+  font-size: 14px;
+  color: #888;
+}
+
+/* Transaction ID */
+.pp-transaction {
+  background: #000;
+  padding: 16px 20px;
+}
+
+.pp-txn-label {
+  display: block;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.pp-txn-id {
+  display: block;
+  font-size: 16px;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, monospace;
+}
+
+/* Debited From */
+.pp-debit {
+  background: #000;
+  padding: 16px 20px;
+  border-top: 1px solid #222;
+}
+
+.pp-debit-label {
+  display: block;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.pp-debit-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pp-bank-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #fff;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.pp-debit-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pp-account {
+  font-size: 15px;
+  color: #fff;
+}
+
+.pp-utr {
+  font-size: 13px;
+  color: #888;
+}
+
+.pp-debit-amount {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+}
+
+/* Action Buttons */
+.pp-actions {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px 16px;
+  background: #000;
+  border-top: 1px solid #222;
+}
+
+.pp-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.pp-action-icon {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.pp-action span {
+  font-size: 11px;
+  color: #888;
+}
+
+/* Contact Support */
+.pp-support {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  background: #000;
+  border-top: 1px solid #222;
+  gap: 12px;
+}
+
+.pp-support-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #888;
+  flex-shrink: 0;
+}
+
+.pp-support-text {
+  flex: 1;
+  font-size: 15px;
+  color: #fff;
+}
+
+.pp-support-arrow {
+  font-size: 22px;
+  color: #666;
+}
+
+/* Powered By Footer */
+.pp-powered {
+  padding: 16px 20px;
+  background: #000;
+  display: flex;
+  justify-content: center;
+}
+
+.pp-powered-img {
+  height: 72px;
+  object-fit: contain;
+}
+
+/* ============================================
+   PLAYO SPORTS BOOKING
+   Figma specs: 658 x 876
+   ============================================ */
+.template-playo {
+  width: 658px;
+  min-height: 876px;
+  background: #FFFFFF;
+  margin: 0 auto;
+  position: relative;
+}
+
+.template-playo .playo-logo {
+  position: absolute;
+  top: 33px;
+  left: 48px;
+  width: 92px;
+  height: 38px;
+}
+
+.template-playo .playo-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.template-playo .playo-banner {
+  position: absolute;
+  top: 113px;
+  left: 28px;
+  width: 603px;
+  height: 151px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.template-playo .playo-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.template-playo .playo-content {
+  position: absolute;
+  top: 299px;
+  left: 34px;
+  width: 585px;
+}
+
+.template-playo .playo-greeting {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.21em;
+  color: #000000;
+  margin-bottom: 24px;
+}
+
+.template-playo .playo-message {
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.385em;
+  color: #000000;
+  margin-bottom: 18px;
+}
+
+.template-playo .playo-message strong {
+  font-weight: 700;
+}
+
+.template-playo .playo-note {
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.385em;
+  color: #000000;
+}
+
+/* Booking Details Section */
+.template-playo .playo-details {
+  position: absolute;
+  top: 484px;
+  left: 0;
+  right: 0;
+  display: flex;
+  padding: 0 55px 0 55px;
+}
+
+.template-playo .playo-booking-info {
+  width: 254px;
+}
+
+.template-playo .playo-detail-row {
+  margin-bottom: 20px;
+}
+
+.template-playo .playo-label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.636em;
+  color: #758A80;
+  margin-bottom: 4px;
+}
+
+.template-playo .playo-value-bold {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.067em;
+  color: #000000;
+}
+
+.template-playo .playo-slot {
+  line-height: 1.333em;
+}
+
+/* Payment Info Section */
+.template-playo .playo-payment-info {
+  position: absolute;
+  left: 356px;
+  width: 243px;
+}
+
+.template-playo .playo-payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.template-playo .playo-payment-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.636em;
+  color: #000000;
+}
+
+.template-playo .playo-payment-amount {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.2em;
+  color: #000000;
+}
+
+.template-playo .playo-payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.template-playo .playo-payment-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.636em;
+  color: #758A80;
+}
+
+.template-playo .playo-payment-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.385em;
+  color: #000000;
+}
+
+.template-playo .playo-discount {
+  color: #02B562;
+}
+
+.template-playo .playo-payment-divider {
+  border-top: 2px solid #000000;
+  margin: 16px 0;
+}
+
+.template-playo .playo-footer {
+  position: absolute;
+  bottom: 19px;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.template-playo .playo-footer span {
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.231em;
+  color: #758A80;
+}
+
+/* ============================================
+   SHELL PETROL BILL
+   Figma specs: 595 x 956
+   ============================================ */
+.template-shell {
+  width: 595px;
+  min-height: 956px;
+  background: #FFFFFF;
+  margin: 0 auto;
+  padding: 32px 31px;
+  font-family: 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.shell-transaction-header {
+  margin-bottom: 24px;
+}
+
+.shell-transaction-header h2 {
+  font-family: 'Montreal', sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.219em;
+  letter-spacing: -0.03em;
+  color: #DD1D21;
+  margin: 0;
+}
+
+.shell-transaction-info {
+  margin-bottom: 24px;
+}
+
+.shell-transaction-info p {
+  margin: 0;
+}
+
+.shell-datetime {
+  font-family: 'Avenir', sans-serif;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1.366em;
+  color: #6A6A6A;
+  margin-bottom: 8px !important;
+}
+
+.shell-location {
+  font-family: 'Montreal', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.219em;
+  letter-spacing: -0.03em;
+  color: #404040;
+  margin-bottom: 20px !important;
+}
+
+.shell-txn-id {
+  font-family: 'Avenir', sans-serif;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1.366em;
+  color: #6A6A6A;
+}
+
+.shell-purchased-header {
+  background: #F7F7F7;
+  padding: 16px 32px;
+  margin: 0 -31px;
+}
+
+.shell-purchased-header span {
+  font-family: 'Montreal', sans-serif;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.219em;
+  color: #515151;
+}
+
+.shell-items {
+  padding: 14px 0;
+}
+
+.shell-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.shell-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shell-item-name {
+  font-family: 'Montreal', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.219em;
+  letter-spacing: -0.05em;
+  color: #404040;
+}
+
+.shell-item-detail {
+  font-family: 'Avenir', sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.366em;
+  color: #6A6A6A;
+}
+
+.shell-item-amount {
+  font-family: 'Montreal', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.219em;
+  letter-spacing: -0.05em;
+  color: #404040;
+}
+
+.shell-discount-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.shell-discount-text {
+  font-family: 'Avenir', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.366em;
+  letter-spacing: -0.01em;
+  color: #009355;
+}
+
+.shell-discount-amount {
+  font-family: 'Avenir', sans-serif;
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.366em;
+  letter-spacing: -0.01em;
+  color: #008443;
+}
+
+.shell-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid #E0E0E0;
+}
+
+.shell-total-label {
+  font-family: 'Montreal', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.219em;
+  letter-spacing: -0.05em;
+  color: #404040;
+}
+
+.shell-total-amount {
+  font-family: 'Montreal', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.219em;
+  letter-spacing: -0.05em;
+  color: #404040;
+}
+
+.shell-points {
+  padding: 8px 0 0;
+  border-top: 1px solid #E0E0E0;
+}
+
+.shell-points-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.shell-points-row span:first-child {
+  font-family: 'Montreal', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.219em;
+  letter-spacing: -0.05em;
+  color: #404040;
+}
+
+.shell-points-value {
+  font-family: 'Montreal', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.219em;
+  letter-spacing: -0.05em;
+  color: #318243;
+}
+
+.shell-footer {
+  margin-top: auto;
+  padding-top: 80px;
+  text-align: center;
+}
+
+.shell-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+.shell-pecten {
+  width: 73px;
+  height: 73px;
+  object-fit: contain;
+}
+
+.shell-thank-you {
+  font-family: 'Montreal', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.219em;
+  letter-spacing: -0.03em;
+  color: #404040;
+  margin: 0 0 8px 0;
+}
+
+.shell-footer-note {
+  font-family: 'Avenir', sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.366em;
+  color: #6A6A6A;
+  margin: 0;
+}
+
+/* ============================================
+   AIRTEL BROADBAND RECEIPT
+   Based on Figma: 595x842px (A4)
+   Font: Tondo, 11px content / 13px headers
+   ============================================ */
+.template-airtel {
+  position: relative;
+  width: 100%;
+  max-width: 595px;
+  min-height: 760px;
+  padding-bottom: 30px;
+  background: #FFFFFF;
+  font-family: 'Tondo', Arial, sans-serif;
+  color: #000000;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+/* Paid Watermark */
+.airtel-watermark {
+  position: absolute;
+  top: 146px;
+  left: 50px;
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+  font-size: 180px;
+  line-height: 1.25em;
+  color: #E8ECEF;
+  text-align: center;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Logo */
+.airtel-logo {
+  position: absolute;
+  top: 32px;
+  right: 20px;
+  width: 87px;
+  height: 39px;
+  z-index: 1;
+}
+
+.airtel-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Company Info */
+.airtel-company {
+  position: absolute;
+  top: 77px;
+  left: 30px;
+  right: 30px;
+  text-align: center;
+  z-index: 1;
+}
+
+.airtel-company-name {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.2em;
+  letter-spacing: 0.02em;
+  margin: 0;
+  color: #000000;
+}
+
+.airtel-doc-type {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.2em;
+  letter-spacing: 0.02em;
+  margin: 6px 0 0 0;
+  color: #000000;
+}
+
+/* Thank you message */
+.airtel-thankyou {
+  position: absolute;
+  top: 139px;
+  left: 30px;
+  right: 30px;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.36em;
+  color: #000000;
+  z-index: 1;
+}
+
+/* Details Table */
+.airtel-table {
+  position: absolute;
+  top: 164px;
+  left: 30px;
+  right: 30px;
+  z-index: 1;
+}
+
+.airtel-row {
+  display: flex;
+  border: 0.6px solid #000000;
+  margin-top: -0.6px;
+}
+
+.airtel-row:first-child {
+  margin-top: 0;
+}
+
+.airtel-cell {
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.36em;
+  color: #000000;
+}
+
+.airtel-cell.airtel-label {
+  flex: 0 0 50%;
+  border-right: 0.6px solid #000000;
+}
+
+.airtel-cell.airtel-value {
+  flex: 0 0 50%;
+}
+
+/* Terms and Conditions Section */
+.airtel-terms-section {
+  position: absolute;
+  top: 440px;
+  left: 30px;
+  right: 30px;
+  z-index: 1;
+}
+
+.airtel-terms-title {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.2em;
+  letter-spacing: 0.02em;
+  margin: 0 0 10px 0;
+  color: #000000;
+}
+
+.airtel-terms-text {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.36em;
+  margin: 0 0 5px 0;
+  color: #000000;
+}
+
+/* Discrepancy notice */
+.airtel-discrepancy {
+  position: absolute;
+  top: 540px;
+  left: 30px;
+  right: 30px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.36em;
+  color: #000000;
+  z-index: 1;
+}
+
+/* Airtel Thanks App info */
+.airtel-app-info {
+  position: absolute;
+  top: 565px;
+  left: 30px;
+  right: 30px;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.36em;
+  color: #FF0000;
+  text-align: center;
+  z-index: 1;
+}
+
+/* System generated notice */
+.airtel-notice {
+  position: absolute;
+  top: 620px;
+  left: 30px;
+  right: 30px;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.36em;
+  color: #000000;
+  z-index: 1;
+}
+
+/* Footer */
+.airtel-footer {
+  position: absolute;
+  top: 680px;
+  left: 30px;
+  right: 30px;
+  text-align: center;
+  z-index: 1;
+}
+
+.airtel-footer p {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.36em;
+  margin: 0;
+  color: #000000;
+}
+
+/* ============================================
+   GENERIC TEMPLATE (Fallback)
+   ============================================ */
+.template-generic {
+  padding: 32px;
+}
+
+.generic-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #1a1a1a;
+}
+
+.generic-header .icon {
+  font-size: 32px;
+}
+
+.generic-header h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.generic-body {
+  display: grid;
+  gap: 12px;
+}
+
+.generic-body .detail-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.generic-body .detail-row:last-child {
+  border-bottom: none;
+}
+
+.generic-body .label {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.generic-body .value {
+  font-size: 13px;
+}

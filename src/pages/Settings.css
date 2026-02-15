@@ -1,0 +1,131 @@
+/* Settings Page Styles */
+
+.settings-page {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.settings-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Onboarding Banner */
+.onboarding-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: rgba(59, 130, 246, 0.1);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.onboarding-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.onboarding-banner strong {
+  display: block;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.onboarding-banner p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Header */
+.settings-header {
+  padding: var(--space-xl) var(--space-xl) 0;
+}
+
+.settings-header h1 {
+  margin-bottom: var(--space-xs);
+}
+
+.settings-header p {
+  color: var(--text-muted);
+}
+
+/* Form */
+.settings-form {
+  padding: var(--space-xl);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-full {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  margin-bottom: var(--space-sm);
+  font-weight: 500;
+}
+
+.form-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: var(--space-xs);
+}
+
+/* Actions */
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--border-color);
+}
+
+.check-icon {
+  color: var(--accent-success);
+  font-weight: bold;
+}
+
+/* Note */
+.settings-note {
+  padding: var(--space-lg) var(--space-xl);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+.settings-note p {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.settings-note strong {
+  color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+  }
+}
