@@ -16,6 +16,8 @@ import {
   formatDate 
 } from '../utils/dateHelpers';
 import { exportBill } from '../utils/exportUtils';
+import { logDownload } from '../utils/downloadLogger';
+import { useAccessStore } from '../context/store';
 import Layout from '../components/Layout';
 import BillPreview from '../components/BillPreview';
 import './Generator.css';
@@ -29,6 +31,7 @@ const Generator = () => {
   const { profile } = useProfileStore();
   const { getDefaults, saveDefaults } = useTemplateDefaultsStore();
   const { isExporting, setExporting } = useUIStore();
+  const { email: userEmail } = useAccessStore();
   
   const [formData, setFormData] = useState({});
   const datePresets = getDatePresets();
@@ -124,6 +127,7 @@ const Generator = () => {
     setExporting(true);
     try {
       await exportBill(exportElement, format, template.id, isPhonePe);
+      logDownload(userEmail, template.name || templateId, format);
     } catch (error) {
       console.error('Export failed:', error);
       alert('Export failed. Please try again.');
