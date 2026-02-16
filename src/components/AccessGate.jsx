@@ -131,14 +131,17 @@ const AccessGate = () => {
           </button>
         </motion.form>
         
-        <motion.p 
-          className="access-note"
+        <motion.div 
+          className="access-footer"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.3 }}
         >
-          Access is invite-only. Contact the admin to get added.
-        </motion.p>
+          <p className="access-note">Access is invite-only.</p>
+          <button type="button" className="request-access-btn">
+            Request Access
+          </button>
+        </motion.div>
       </div>
     </div>
   );
