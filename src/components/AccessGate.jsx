@@ -1,14 +1,130 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useAccessStore } from '../context/store';
 import { validateEmailAccess, isValidEmail } from '../utils/accessValidation';
 import './AccessGate.css';
+
+const API_URL = import.meta.env.VITE_API_URL || '';
+
+const RequestModal = ({ onClose }) => {
+  const [reqEmail, setReqEmail] = useState('');
+  const [reason, setReason] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [reqError, setReqError] = useState('');
+
+  const handleRequest = async (e) => {
+    e.preventDefault();
+    setReqError('');
+
+    if (!isValidEmail(reqEmail)) {
+      setReqError('Please enter a valid email address');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${API_URL}/api/request-access`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: reqEmail, reason }),
+      });
+
+      if (!res.ok) throw new Error('Request failed');
+      setSubmitted(true);
+    } catch {
+      setReqError('Failed to submit. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <motion.div
+      className="request-overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+    >
+      <motion.div
+        className="request-modal"
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 20, scale: 0.95 }}
+        transition={{ duration: 0.25 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="request-modal-header">
+          <span className="request-modal-title">REQUEST ACCESS</span>
+          <button className="request-modal-close" onClick={onClose}>✕</button>
+        </div>
+
+        {submitted ? (
+          <div className="request-success">
+            <span className="request-success-icon">✓</span>
+            <p className="request-success-text">Request submitted successfully.</p>
+            <p className="request-success-sub">You will be notified once approved.</p>
+            <button className="request-done-btn" onClick={onClose}>Close</button>
+          </div>
+        ) : (
+          <form onSubmit={handleRequest} className="request-form">
+            <div className="form-group">
+              <label htmlFor="req-email">Email Address</label>
+              <input
+                id="req-email"
+                type="email"
+                value={reqEmail}
+                onChange={(e) => setReqEmail(e.target.value)}
+                placeholder="your@email.com"
+                disabled={submitting}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="req-reason">Reason <span className="optional-tag">optional</span></label>
+              <textarea
+                id="req-reason"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="Why do you need access?"
+                rows={3}
+                disabled={submitting}
+              />
+            </div>
+
+            {reqError && (
+              <div className="error-message">{reqError}</div>
+            )}
+
+            <button
+              type="submit"
+              className="btn btn-primary btn-lg access-btn"
+              disabled={submitting || !reqEmail}
+            >
+              {submitting ? (
+                <>
+                  <span className="spinner" />
+                  Submitting...
+                </>
+              ) : (
+                'Submit Request'
+              )}
+            </button>
+          </form>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+};
 
 const AccessGate = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showRequestModal, setShowRequestModal] = useState(false);
   
   const navigate = useNavigate();
   const { setAccess, isWithinGracePeriod, email: cachedEmail } = useAccessStore();
@@ -33,7 +149,6 @@ const AccessGate = () => {
       } else if (result.valid === false) {
         setError('Access denied. Your email is not on the approved list. Please contact the admin.');
       } else if (result.error) {
-        // Network error - check grace period
         if (cachedEmail === email && isWithinGracePeriod()) {
           setAccess(email);
           navigate('/home');
@@ -138,11 +253,21 @@ const AccessGate = () => {
           transition={{ delay: 1.5, duration: 0.3 }}
         >
           <p className="access-note">Access is invite-only.</p>
-          <button type="button" className="request-access-btn">
+          <button
+            type="button"
+            className="request-access-btn"
+            onClick={() => setShowRequestModal(true)}
+          >
             Request Access
           </button>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {showRequestModal && (
+          <RequestModal onClose={() => setShowRequestModal(false)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
