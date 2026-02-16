@@ -476,38 +476,274 @@
   to { transform: rotate(360deg); }
 }
 
-/* Access Denied - Cyberpunk */
-.access-denied {
-  min-height: 100vh;
+/* =============================================
+   FULL-SCREEN DENIED TAKEOVER
+   ============================================= */
+
+.denied-takeover {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #0a0a0c;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+/* --- Denied Background --- */
+.denied-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.denied-grid {
+  position: absolute;
+  inset: -40px;
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(rgba(236, 72, 153, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(236, 72, 153, 0.06) 1px, transparent 1px);
+  animation: gridDrift 8s linear infinite;
+}
+
+.denied-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(236, 72, 153, 0.08) 70%, rgba(180, 30, 80, 0.15) 100%);
+  animation: vignettePulse 4s ease-in-out infinite;
+}
+
+@keyframes vignettePulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.denied-scanbeam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.4), transparent);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.3), 0 0 60px rgba(236, 72, 153, 0.1);
+  animation: deniedScan 6s linear infinite;
+}
+
+@keyframes deniedScan {
+  0% { top: -2px; }
+  100% { top: 100%; }
+}
+
+/* --- Red Particles --- */
+.denied-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.denied-particle {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 2px;
+  background: #ec4899;
+  border-radius: 50%;
+  box-shadow: 0 0 6px 1px rgba(236, 72, 153, 0.6);
+  animation: particleFloat linear infinite;
+}
+
+.denied-particle:nth-child(1)  { left: 5%;  animation-duration: 12s; animation-delay: 0s; }
+.denied-particle:nth-child(2)  { left: 15%; animation-duration: 16s; animation-delay: -3s; }
+.denied-particle:nth-child(3)  { left: 25%; animation-duration: 10s; animation-delay: -6s; }
+.denied-particle:nth-child(4)  { left: 35%; animation-duration: 14s; animation-delay: -1s; }
+.denied-particle:nth-child(5)  { left: 45%; animation-duration: 18s; animation-delay: -8s; }
+.denied-particle:nth-child(6)  { left: 55%; animation-duration: 11s; animation-delay: -4s; }
+.denied-particle:nth-child(7)  { left: 65%; animation-duration: 15s; animation-delay: -2s; }
+.denied-particle:nth-child(8)  { left: 75%; animation-duration: 13s; animation-delay: -7s; }
+.denied-particle:nth-child(9)  { left: 82%; animation-duration: 17s; animation-delay: -5s; }
+.denied-particle:nth-child(10) { left: 88%; animation-duration: 12s; animation-delay: -9s; }
+.denied-particle:nth-child(11) { left: 93%; animation-duration: 14s; animation-delay: -11s; }
+.denied-particle:nth-child(12) { left: 10%; animation-duration: 19s; animation-delay: -13s; }
+
+/* --- Content Container --- */
+.denied-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
   padding: var(--space-lg);
+  max-width: 600px;
+  width: 100%;
 }
 
-.access-denied-card {
+/* --- Glitch Title --- */
+.denied-main {
   text-align: center;
-  background: linear-gradient(135deg, #1e2029 0%, #111216 100%);
-  border: 1px solid rgba(236, 72, 153, 0.3);
-  padding: var(--space-2xl);
-  max-width: 420px;
-  box-shadow: 0 0 30px rgba(236, 72, 153, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
 }
 
-.access-denied-card .icon {
-  font-size: 3rem;
-  display: block;
-  margin-bottom: var(--space-md);
+.denied-glitch-wrapper {
+  position: relative;
+  padding: 0.5rem 0;
 }
 
-.access-denied-card h1 {
+.denied-glitch {
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  font-weight: 900;
+  letter-spacing: 0.15em;
   color: #ec4899;
-  text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
-  margin-bottom: var(--space-md);
+  text-shadow:
+    0 0 10px rgba(236, 72, 153, 0.8),
+    0 0 40px rgba(236, 72, 153, 0.4),
+    0 0 80px rgba(236, 72, 153, 0.2);
+  position: relative;
+  animation: glitchShake 5s ease-in-out infinite;
 }
 
-.access-denied-card p {
-  margin-bottom: var(--space-xl);
+.denied-glitch::before,
+.denied-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.denied-glitch::before {
+  color: #06b6d4;
+  animation: glitchLeft 3s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+  opacity: 0.8;
+}
+
+.denied-glitch::after {
+  color: #f97316;
+  animation: glitchRight 2.5s infinite linear alternate-reverse;
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+  opacity: 0.8;
+}
+
+@keyframes glitchLeft {
+  0% { transform: translate(0); }
+  20% { transform: translate(-3px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, 2px); }
+  80% { transform: translate(3px, 0px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitchRight {
+  0% { transform: translate(0); }
+  20% { transform: translate(3px, -1px); }
+  40% { transform: translate(-2px, 1px); }
+  60% { transform: translate(1px, -2px); }
+  80% { transform: translate(-3px, 0px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitchShake {
+  0%, 100% { transform: translate(0); }
+  2% { transform: translate(-2px, 1px); }
+  4% { transform: translate(2px, -1px); }
+  6% { transform: translate(0); }
+  48% { transform: translate(0); }
+  50% { transform: translate(3px, 0); }
+  51% { transform: translate(-3px, 1px); }
+  52% { transform: translate(1px, -1px); }
+  53% { transform: translate(0); }
+}
+
+/* --- Subtext --- */
+.denied-subtext {
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
+  color: rgba(236, 72, 153, 0.5);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+/* --- Email Log --- */
+.denied-email-log {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 8px 16px;
+  background: rgba(236, 72, 153, 0.05);
+  border: 1px solid rgba(236, 72, 153, 0.15);
+}
+
+.denied-email-label {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.denied-email-value {
+  color: rgba(236, 72, 153, 0.8);
+}
+
+.denied-email-status {
+  color: rgba(239, 68, 68, 0.6);
+}
+
+/* --- Retry Button --- */
+.denied-retry-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 0.5rem;
+  padding: 12px 28px;
+  background: transparent;
+  border: 1px solid rgba(236, 72, 153, 0.3);
+  color: rgba(236, 72, 153, 0.8);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.denied-retry-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.08), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.denied-retry-btn:hover::before {
+  transform: translateX(100%);
+}
+
+.denied-retry-btn:hover {
+  border-color: rgba(236, 72, 153, 0.6);
+  color: #ec4899;
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.15), inset 0 0 20px rgba(236, 72, 153, 0.05);
+  text-shadow: 0 0 8px rgba(236, 72, 153, 0.4);
+}
+
+.denied-retry-bracket {
+  color: rgba(255, 255, 255, 0.2);
+  font-weight: 700;
+}
+
+.denied-retry-key {
+  color: #ec4899;
+  font-weight: 700;
+  text-shadow: 0 0 6px rgba(236, 72, 153, 0.5);
+}
+
+.denied-retry-text {
+  margin-left: 4px;
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAccessStore } from '../context/store';
@@ -6,6 +6,76 @@ import { validateEmailAccess, isValidEmail } from '../utils/accessValidation';
 import './AccessGate.css';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
+
+const DeniedScreen = ({ email, onRetry }) => {
+  return (
+    <motion.div
+      className="denied-takeover"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="denied-bg">
+        <div className="denied-grid" />
+        <div className="denied-vignette" />
+        <div className="denied-scanbeam" />
+        <div className="denied-particles">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="denied-particle" />
+          ))}
+        </div>
+      </div>
+
+      <div className="denied-content">
+        <motion.div
+          className="denied-main"
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        >
+          <div className="denied-glitch-wrapper">
+            <h1 className="denied-glitch" data-text="ACCESS DENIED">
+              ACCESS DENIED
+            </h1>
+          </div>
+
+          <motion.div
+            className="denied-subtext"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.3 }}
+          >
+            IDENTITY NOT RECOGNIZED IN SYSTEM
+          </motion.div>
+
+          <motion.div
+            className="denied-email-log"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.3 }}
+          >
+            <span className="denied-email-label">QUERY:</span>
+            <span className="denied-email-value">{email}</span>
+            <span className="denied-email-status">// NOT FOUND</span>
+          </motion.div>
+
+          <motion.button
+            className="denied-retry-btn"
+            onClick={onRetry}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2, duration: 0.3 }}
+          >
+            <span className="denied-retry-bracket">[</span>
+            <span className="denied-retry-key">R</span>
+            <span className="denied-retry-bracket">]</span>
+            <span className="denied-retry-text">RETRY AUTHENTICATION</span>
+          </motion.button>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
 
 const RequestModal = ({ onClose }) => {
   const [reqEmail, setReqEmail] = useState('');
@@ -125,6 +195,8 @@ const AccessGate = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [showRequestModal, setShowRequestModal] = useState(false);
+  const [isDenied, setIsDenied] = useState(false);
+  const [deniedEmail, setDeniedEmail] = useState('');
   
   const navigate = useNavigate();
   const { setAccess, isWithinGracePeriod, email: cachedEmail } = useAccessStore();
@@ -147,7 +219,8 @@ const AccessGate = () => {
         setAccess(email);
         navigate('/home');
       } else if (result.valid === false) {
-        setError('Access denied. Your email is not on the approved list. Please contact the admin.');
+        setDeniedEmail(email);
+        setIsDenied(true);
       } else if (result.error) {
         if (cachedEmail === email && isWithinGracePeriod()) {
           setAccess(email);
@@ -162,6 +235,17 @@ const AccessGate = () => {
       setIsLoading(false);
     }
   };
+
+  const handleRetry = useCallback(() => {
+    setIsDenied(false);
+    setDeniedEmail('');
+    setEmail('');
+    setError('');
+  }, []);
+
+  if (isDenied) {
+    return <DeniedScreen email={deniedEmail} onRetry={handleRetry} />;
+  }
 
   return (
     <div className="access-gate">
