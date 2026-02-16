@@ -17,9 +17,9 @@ export const exportToPDF = async (element, filename = 'bill.pdf', fitToContent =
   const options = {
     margin: 0,
     filename: filename,
-    image: { type: 'png', quality: 1 },
+    image: { type: 'jpeg', quality: 0.75 },
     html2canvas: { 
-      scale: 2,
+      scale: 1.5,
       useCORS: true,
       logging: false,
       backgroundColor: fitToContent ? '#000000' : '#ffffff',
@@ -29,11 +29,13 @@ export const exportToPDF = async (element, filename = 'bill.pdf', fitToContent =
     jsPDF: fitToContent ? { 
       unit: 'mm', 
       format: [pxToMm(elementWidth), pxToMm(elementHeight)], 
-      orientation: 'portrait' 
+      orientation: 'portrait',
+      compress: true
     } : { 
       unit: 'mm', 
       format: 'a4', 
-      orientation: 'portrait' 
+      orientation: 'portrait',
+      compress: true
     },
   };
 
@@ -54,14 +56,14 @@ export const exportToImage = async (element, filename = 'bill.png', format = 'pn
 
   try {
     const canvas = await html2canvas(element, {
-      scale: 2,
+      scale: 1.5,
       useCORS: true,
       logging: false,
       backgroundColor: transparentBg ? null : '#ffffff',
     });
 
     const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
-    const quality = format === 'jpg' ? 0.95 : undefined;
+    const quality = format === 'jpg' ? 0.85 : undefined;
     
     const dataUrl = canvas.toDataURL(mimeType, quality);
     

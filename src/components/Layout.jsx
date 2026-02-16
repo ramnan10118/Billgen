@@ -70,22 +70,6 @@ const Layout = ({ children }) => {
         {children}
       </main>
       
-      <footer className="footer metallic-bg">
-        <div className="footer-streak" />
-        <div className="footer-content">
-          <div className="footer-bars">
-            <div className="footer-bar-group">
-              <span className="footer-bar-label">MEM</span>
-              <div className="footer-bar-track"><div className="footer-bar-fill cyan" style={{width: '45%'}} /></div>
-            </div>
-            <div className="footer-bar-group">
-              <span className="footer-bar-label">CPU</span>
-              <div className="footer-bar-track"><div className="footer-bar-fill pink" style={{width: '62%'}} /></div>
-            </div>
-          </div>
-          <p className="footer-text">BillGen — Document Generation System</p>
-        </div>
-      </footer>
     </div>
   );
 };

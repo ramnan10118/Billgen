@@ -87,16 +87,68 @@ body {
   position: relative;
 }
 
-/* Grid Background */
+/* Grid Background - drifting */
 .cyber-grid-bg {
   position: fixed;
-  inset: 0;
+  inset: -40px;
   background-size: 40px 40px;
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   pointer-events: none;
   z-index: 0;
+  animation: gridDrift 8s linear infinite;
+}
+
+@keyframes gridDrift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(40px, 40px); }
+}
+
+/* Floating particles */
+.cyber-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  top: 0;
+  width: 3px;
+  height: 3px;
+  background: #06b6d4;
+  border-radius: 50%;
+  box-shadow: 0 0 8px 2px #06b6d4;
+  animation: particleFloat linear infinite;
+}
+
+.particle:nth-child(1) { left: 10%; width: 3px; height: 3px; animation-duration: 14s; animation-delay: 0s; }
+.particle:nth-child(2) { left: 25%; width: 4px; height: 4px; animation-duration: 18s; animation-delay: -3s; background: #ec4899; box-shadow: 0 0 6px #ec4899; }
+.particle:nth-child(3) { left: 40%; width: 3px; height: 3px; animation-duration: 12s; animation-delay: -6s; }
+.particle:nth-child(4) { left: 55%; width: 2px; height: 2px; animation-duration: 20s; animation-delay: -2s; background: #a855f7; box-shadow: 0 0 6px #a855f7; }
+.particle:nth-child(5) { left: 70%; width: 4px; height: 4px; animation-duration: 16s; animation-delay: -8s; }
+.particle:nth-child(6) { left: 85%; width: 3px; height: 3px; animation-duration: 22s; animation-delay: -5s; background: #ec4899; box-shadow: 0 0 6px #ec4899; }
+.particle:nth-child(7) { left: 35%; width: 2px; height: 2px; animation-duration: 15s; animation-delay: -10s; background: #a855f7; box-shadow: 0 0 6px #a855f7; }
+.particle:nth-child(8) { left: 60%; width: 3px; height: 3px; animation-duration: 17s; animation-delay: -7s; }
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.8;
+  }
+  95% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-10vh);
+    opacity: 0;
+  }
 }
 
 /* Scanline overlay */

@@ -66,11 +66,18 @@ const AccessDenied = () => (
 function App() {
   return (
     <BrowserRouter>
-      {/* Cyberpunk grid background */}
+      {/* Cyberpunk animated background */}
       <div className="cyber-grid-bg" />
-      {/* Scanline overlay */}
-      <div className="cyber-scanline" />
-      <div className="cyber-scan-beam" />
+      <div className="cyber-particles">
+        <div className="particle" />
+        <div className="particle" />
+        <div className="particle" />
+        <div className="particle" />
+        <div className="particle" />
+        <div className="particle" />
+        <div className="particle" />
+        <div className="particle" />
+      </div>
       
       <Routes>
         {/* Public routes */}
