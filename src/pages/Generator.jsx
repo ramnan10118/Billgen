@@ -36,6 +36,17 @@ const Generator = () => {
   const [formData, setFormData] = useState({});
   const datePresets = getDatePresets();
 
+  const autoGenerators = {
+    billNumber: generateBillNumber,
+    accountNumber: generateAccountNumber,
+    playoId: generatePlayoId,
+    shellTxnId: generateShellTxnId,
+    airtelReceiptNo: generateAirtelReceiptNo,
+    airtelOrderNo: generateAirtelOrderNo,
+    phonePeTxnId: generatePhonePeTxnId,
+    utrNumber: generateUtrNumber,
+  };
+
   // Initialize form with profile, defaults, and auto-generated values
   useEffect(() => {
     if (!template) return;
@@ -175,13 +186,37 @@ const Generator = () => {
       case 'date':
         return (
           <div className="field-with-presets">
-            <input
-              id={field.id}
-              type="text"
-              value={value}
-              onChange={(e) => handleChange(field.id, e.target.value)}
-              placeholder="DD/MM/YYYY"
-            />
+            <div className="date-input-wrapper">
+              <input
+                id={field.id}
+                type="text"
+                value={value}
+                onChange={(e) => handleChange(field.id, e.target.value)}
+                placeholder="DD/MM/YYYY"
+              />
+              <input
+                type="date"
+                className="date-picker-hidden"
+                onChange={(e) => {
+                  if (e.target.value) {
+                    const [y, m, d] = e.target.value.split('-');
+                    handleChange(field.id, `${d}/${m}/${y}`);
+                  }
+                }}
+                tabIndex={-1}
+              />
+              <button
+                type="button"
+                className="date-picker-btn"
+                onClick={(e) => {
+                  const hiddenInput = e.currentTarget.parentElement.querySelector('.date-picker-hidden');
+                  hiddenInput?.showPicker?.();
+                }}
+                title="Open date picker"
+              >
+                📅
+              </button>
+            </div>
             <div className="field-presets">
               <button
                 type="button"
@@ -280,6 +315,27 @@ const Generator = () => {
         );
         
       default:
+        if (field.autoGenerate && autoGenerators[field.autoGenerate]) {
+          return (
+            <div className="field-with-randomize">
+              <input
+                id={field.id}
+                type="text"
+                value={value}
+                onChange={(e) => handleChange(field.id, e.target.value)}
+                placeholder={`Enter ${field.label.toLowerCase()}`}
+              />
+              <button
+                type="button"
+                className="randomize-btn"
+                onClick={() => handleChange(field.id, autoGenerators[field.autoGenerate]())}
+                title="Randomize"
+              >
+                🎲
+              </button>
+            </div>
+          );
+        }
         return (
           <input
             id={field.id}
