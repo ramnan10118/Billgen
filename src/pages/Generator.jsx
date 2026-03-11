@@ -20,6 +20,7 @@ import { logDownload } from '../utils/downloadLogger';
 import { useAccessStore } from '../context/store';
 import Layout from '../components/Layout';
 import BillPreview from '../components/BillPreview';
+import DatePicker from '../components/DatePicker';
 import './Generator.css';
 
 const Generator = () => {
@@ -189,37 +190,10 @@ const Generator = () => {
       case 'date':
         return (
           <div className="field-with-presets">
-            <div className="date-input-wrapper">
-              <input
-                id={field.id}
-                type="text"
-                value={value}
-                onChange={(e) => handleChange(field.id, e.target.value)}
-                placeholder="DD/MM/YYYY"
-              />
-              <input
-                type="date"
-                className="date-picker-hidden"
-                onChange={(e) => {
-                  if (e.target.value) {
-                    const [y, m, d] = e.target.value.split('-');
-                    handleChange(field.id, `${d}/${m}/${y}`);
-                  }
-                }}
-                tabIndex={-1}
-              />
-              <button
-                type="button"
-                className="date-picker-btn"
-                onClick={(e) => {
-                  const hiddenInput = e.currentTarget.parentElement.querySelector('.date-picker-hidden');
-                  hiddenInput?.showPicker?.();
-                }}
-                title="Open date picker"
-              >
-                📅
-              </button>
-            </div>
+            <DatePicker
+              value={value}
+              onChange={(val) => handleChange(field.id, val)}
+            />
             <div className="field-presets">
               <button
                 type="button"

@@ -230,6 +230,19 @@ const PhonePePaymentTemplate = ({ data }) => {
 // PLAYO SPORTS BOOKING
 // ============================================
 const PlayoBookingTemplate = ({ data }) => {
+  const calculateTotal = () => {
+    const court = parseFloat(data.courtPrice) || 0;
+    const fee = parseFloat(data.convenienceFee) || 0;
+    const disc = parseFloat(data.discount) || 0;
+    return (court + fee - disc).toFixed(2);
+  };
+
+  const calculatePayable = () => {
+    const total = parseFloat(calculateTotal()) || 0;
+    const advance = parseFloat(data.advancePaid) || 0;
+    return Math.max(0, total - advance).toFixed(2);
+  };
+
   const formatPlayoDate = (dateStr) => {
     if (!dateStr) return '________';
     const parts = dateStr.split('/');
@@ -297,7 +310,7 @@ const PlayoBookingTemplate = ({ data }) => {
         <div className="playo-payment-info">
           <div className="playo-payment-header">
             <span className="playo-payment-title">Total Amount Paid</span>
-            <span className="playo-payment-amount">₹{data.totalAmount || '0'}</span>
+            <span className="playo-payment-amount">₹{data.totalAmount || calculateTotal()}</span>
           </div>
           
           <div className="playo-payment-row">
@@ -332,7 +345,7 @@ const PlayoBookingTemplate = ({ data }) => {
           
           <div className="playo-payment-header">
             <span className="playo-payment-title">Payable at the venue:</span>
-            <span className="playo-payment-value">₹{data.payableAtVenue || '0'}</span>
+            <span className="playo-payment-value">₹{data.payableAtVenue || calculatePayable()}</span>
           </div>
         </div>
       </div>

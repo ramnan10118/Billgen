@@ -269,13 +269,12 @@ select {
 
 label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--accent-primary);
   margin-bottom: var(--space-xs);
   font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.02em;
 }
 
 /* Buttons */

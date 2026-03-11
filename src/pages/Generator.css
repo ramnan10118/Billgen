@@ -145,53 +145,6 @@
   gap: var(--space-xs);
 }
 
-/* Date input with picker */
-.date-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.date-input-wrapper input[type="text"] {
-  flex: 1;
-  padding-right: 36px;
-}
-
-.date-picker-hidden {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 0;
-  height: 0;
-  opacity: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.date-picker-btn {
-  position: absolute;
-  right: 4px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 1px solid transparent;
-  cursor: pointer;
-  font-size: 0.875rem;
-  padding: 0;
-  border-radius: 2px;
-  transition: all var(--transition-fast);
-}
-
-.date-picker-btn:hover {
-  background: rgba(6, 182, 212, 0.15);
-  border-color: rgba(6, 182, 212, 0.3);
-}
-
 /* Field with randomize button */
 .field-with-randomize {
   position: relative;

@@ -30,9 +30,9 @@ export const TEMPLATES = {
 
   playo: {
     id: 'playo',
-    name: 'Playo Sports Booking',
+    name: 'Sports Bill',
     icon: '⚽',
-    description: 'Sports facility booking confirmation',
+    description: 'Booking confirmation',
     color: '#10B981',
     fields: [
       { id: 'customerName', label: 'Your Name', type: 'text', profileKey: 'fullName' },
@@ -56,9 +56,9 @@ export const TEMPLATES = {
 
   petrol: {
     id: 'petrol',
-    name: 'Shell Petrol Bill',
+    name: 'Petrol Bill',
     icon: '⛽',
-    description: 'Shell fuel station receipt',
+    description: 'Fuel station receipt',
     color: '#FBBF24',
     fields: [
       { id: 'transactionDate', label: 'Transaction Date', type: 'date' },
@@ -79,9 +79,9 @@ export const TEMPLATES = {
 
   airtel: {
     id: 'airtel',
-    name: 'Airtel Broadband Receipt',
+    name: 'Broadband Receipt',
     icon: '🌐',
-    description: 'Airtel payment receipt',
+    description: 'Payment receipt',
     color: '#E50914',
     fields: [
       { id: 'customerName', label: 'Customer Name', type: 'text', profileKey: 'fullName' },
