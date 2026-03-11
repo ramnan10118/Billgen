@@ -310,7 +310,7 @@ const PlayoBookingTemplate = ({ data }) => {
         <div className="playo-payment-info">
           <div className="playo-payment-header">
             <span className="playo-payment-title">Total Amount Paid</span>
-            <span className="playo-payment-amount">₹{data.totalAmount || calculateTotal()}</span>
+            <span className="playo-payment-amount">₹{calculateTotal()}</span>
           </div>
           
           <div className="playo-payment-row">
@@ -345,7 +345,7 @@ const PlayoBookingTemplate = ({ data }) => {
           
           <div className="playo-payment-header">
             <span className="playo-payment-title">Payable at the venue:</span>
-            <span className="playo-payment-value">₹{data.payableAtVenue || calculatePayable()}</span>
+            <span className="playo-payment-value">₹{calculatePayable()}</span>
           </div>
         </div>
       </div>

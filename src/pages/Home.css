@@ -137,7 +137,7 @@
 .coming-soon-banner {
   position: relative;
   margin-bottom: var(--space-xl);
-  padding: var(--space-lg) var(--space-xl);
+  padding: 12px var(--space-xl);
   background: linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(6, 182, 212, 0.06) 100%);
   border: 1px solid rgba(168, 85, 247, 0.25);
   overflow: hidden;
@@ -153,32 +153,38 @@
   background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.6), rgba(6, 182, 212, 0.4), transparent);
 }
 
+.cs-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
 .cs-badge {
-  display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #a855f7;
   background: rgba(168, 85, 247, 0.15);
   border: 1px solid rgba(168, 85, 247, 0.3);
-  padding: 3px 10px;
-  margin-bottom: 10px;
+  padding: 2px 8px;
+  flex-shrink: 0;
 }
 
-.cs-content h3 {
-  font-size: 1rem;
+.cs-title-row h3 {
+  font-size: 0.9375rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 6px;
+  margin: 0;
   letter-spacing: 0.03em;
 }
 
-.cs-content p {
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
+.cs-description {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
   margin: 0;
 }
 
@@ -241,11 +247,19 @@
   background: rgba(6, 182, 212, 0.06);
 }
 
-.suggest-chip.voted {
+.suggest-chip.selected {
   color: #06b6d4;
   border-color: rgba(6, 182, 212, 0.5);
   background: rgba(6, 182, 212, 0.1);
   box-shadow: 0 0 8px rgba(6, 182, 212, 0.15);
+}
+
+.suggest-chip.submitted {
+  color: var(--text-muted);
+  border-color: rgba(6, 182, 212, 0.2);
+  background: rgba(6, 182, 212, 0.05);
+  opacity: 0.6;
+  cursor: default;
 }
 
 .chip-check {
@@ -254,13 +268,24 @@
 }
 
 .suggest-custom {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  margin-bottom: 12px;
 }
 
 .suggest-custom input {
-  flex: 1;
+  width: 100%;
+}
+
+.suggest-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.suggest-confirm {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: #22c55e;
+  letter-spacing: 0.02em;
 }
 
 /* Footer */
@@ -282,11 +307,8 @@
     grid-template-columns: 1fr;
   }
 
-  .suggest-custom {
+  .suggest-actions {
     flex-direction: column;
-  }
-
-  .suggest-custom .btn {
-    width: 100%;
+    align-items: stretch;
   }
 }

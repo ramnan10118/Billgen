@@ -34,35 +34,38 @@ const submitSuggestion = async (email, suggestion) => {
 const Home = () => {
   const templates = getAllTemplates();
   const { email: userEmail } = useAccessStore();
-  const [votes, setVotes] = useState(() => {
-    const saved = localStorage.getItem('billgen-votes');
+  const [submitted, setSubmitted] = useState(() => {
+    const saved = localStorage.getItem('billgen-submitted');
     return saved ? JSON.parse(saved) : [];
   });
+  const [selected, setSelected] = useState([]);
   const [customSuggestion, setCustomSuggestion] = useState('');
-  const [suggestionSent, setSuggestionSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [confirmMsg, setConfirmMsg] = useState('');
 
   const toggleVote = (option) => {
-    const isRemoving = votes.includes(option);
-    const updated = isRemoving
-      ? votes.filter(v => v !== option)
-      : [...votes, option];
-    setVotes(updated);
-    localStorage.setItem('billgen-votes', JSON.stringify(updated));
-    if (!isRemoving) {
-      submitSuggestion(userEmail, option);
-    }
+    if (submitted.includes(option)) return;
+    setSelected(prev =>
+      prev.includes(option) ? prev.filter(v => v !== option) : [...prev, option]
+    );
   };
 
-  const handleCustomSubmit = () => {
-    if (!customSuggestion.trim()) return;
-    const text = customSuggestion.trim();
-    const updated = [...votes, text];
-    setVotes(updated);
-    localStorage.setItem('billgen-votes', JSON.stringify(updated));
-    submitSuggestion(userEmail, text);
+  const handleSubmitAll = async () => {
+    const allSuggestions = [...selected];
+    if (customSuggestion.trim()) allSuggestions.push(customSuggestion.trim());
+    if (allSuggestions.length === 0) return;
+
+    setSubmitting(true);
+    await Promise.all(allSuggestions.map(s => submitSuggestion(userEmail, s)));
+
+    const updatedSubmitted = [...new Set([...submitted, ...allSuggestions])];
+    setSubmitted(updatedSubmitted);
+    localStorage.setItem('billgen-submitted', JSON.stringify(updatedSubmitted));
+    setSelected([]);
     setCustomSuggestion('');
-    setSuggestionSent(true);
-    setTimeout(() => setSuggestionSent(false), 2000);
+    setConfirmMsg('Response registered. Thanks!');
+    setSubmitting(false);
+    setTimeout(() => setConfirmMsg(''), 3000);
   };
 
   return (
@@ -83,15 +86,14 @@ const Home = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
         >
-          <div className="cs-badge">Coming Soon</div>
-          <div className="cs-content">
+          <div className="cs-title-row">
+            <span className="cs-badge">Coming Soon</span>
             <h3>Auto-Generate &amp; Email</h3>
-            <p>
-              Set up your details once, pick a schedule, and receive all your bills 
-              auto-generated and delivered straight to your inbox on the date you choose. 
-              No more manual downloads.
-            </p>
           </div>
+          <p className="cs-description">
+            Set up your details once, pick a schedule, and receive all your bills 
+            auto-generated and delivered straight to your inbox. No more manual downloads.
+          </p>
         </motion.div>
         
         <div className="templates-grid">
@@ -128,17 +130,22 @@ const Home = () => {
           <h3>What should we build next?</h3>
           <p className="suggest-subtitle">Pick the templates you'd like to see, or suggest your own.</p>
           <div className="suggest-grid">
-            {SUGGESTION_OPTIONS.map(option => (
-              <button
-                key={option}
-                type="button"
-                className={`suggest-chip ${votes.includes(option) ? 'voted' : ''}`}
-                onClick={() => toggleVote(option)}
-              >
-                {votes.includes(option) && <span className="chip-check">&#10003;</span>}
-                {option}
-              </button>
-            ))}
+            {SUGGESTION_OPTIONS.map(option => {
+              const isSubmitted = submitted.includes(option);
+              const isSelected = selected.includes(option);
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  className={`suggest-chip ${isSubmitted ? 'submitted' : ''} ${isSelected ? 'selected' : ''}`}
+                  onClick={() => toggleVote(option)}
+                  disabled={isSubmitted}
+                >
+                  {(isSubmitted || isSelected) && <span className="chip-check">&#10003;</span>}
+                  {option}
+                </button>
+              );
+            })}
           </div>
           <div className="suggest-custom">
             <input
@@ -146,16 +153,27 @@ const Home = () => {
               value={customSuggestion}
               onChange={(e) => setCustomSuggestion(e.target.value)}
               placeholder="Something else? Type here..."
-              onKeyDown={(e) => e.key === 'Enter' && handleCustomSubmit()}
+              onKeyDown={(e) => e.key === 'Enter' && handleSubmitAll()}
             />
+          </div>
+          <div className="suggest-actions">
             <button
               type="button"
-              className="btn btn-primary btn-sm"
-              onClick={handleCustomSubmit}
-              disabled={!customSuggestion.trim()}
+              className="btn btn-primary"
+              onClick={handleSubmitAll}
+              disabled={submitting || (selected.length === 0 && !customSuggestion.trim())}
             >
-              {suggestionSent ? 'Added!' : 'Submit'}
+              {submitting ? 'Submitting...' : 'Submit'}
             </button>
+            {confirmMsg && (
+              <motion.span
+                className="suggest-confirm"
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+              >
+                {confirmMsg}
+              </motion.span>
+            )}
           </div>
         </motion.div>
         
