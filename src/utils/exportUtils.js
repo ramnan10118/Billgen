@@ -14,6 +14,11 @@ export const exportToPDF = async (element, filename = 'bill.pdf', fitToContent =
   // Convert pixels to mm (96 DPI)
   const pxToMm = (px) => px * 0.264583;
 
+  // Detect background color from the element
+  const computedBg = window.getComputedStyle(element).backgroundColor;
+  const isDarkBg = computedBg && (computedBg.includes('0, 0, 0') || computedBg === 'rgb(0, 0, 0)');
+  const bgColor = isDarkBg ? '#000000' : '#ffffff';
+
   const options = {
     margin: 0,
     filename: filename,
@@ -22,7 +27,7 @@ export const exportToPDF = async (element, filename = 'bill.pdf', fitToContent =
       scale: 1.5,
       useCORS: true,
       logging: false,
-      backgroundColor: fitToContent ? '#000000' : '#ffffff',
+      backgroundColor: bgColor,
       width: fitToContent ? elementWidth : undefined,
       height: fitToContent ? elementHeight : undefined,
     },

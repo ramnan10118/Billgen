@@ -127,17 +127,20 @@ const Generator = () => {
     // Save current values as defaults for next time
     saveDefaults(templateId, formData);
     
-    // Check if this is PhonePe template - needs fit-to-content export
-    const isPhonePe = templateId === 'driver' && formData.receiptType === 'PhonePe Payment';
+    // Target the actual template element to avoid wrapper whitespace
+    const templateClass = {
+      driver: formData.receiptType === 'PhonePe Payment' ? '.template-phonepe' : '.template-driver',
+      playo: '.template-playo',
+      petrol: '.template-shell',
+      airtel: '.template-airtel',
+    }[templateId];
     
-    // For PhonePe, target the inner template element directly to avoid wrapper whitespace
-    const exportElement = isPhonePe 
-      ? previewRef.current.querySelector('.template-phonepe') || previewRef.current
-      : previewRef.current;
+    const exportElement = (templateClass && previewRef.current.querySelector(templateClass)) || previewRef.current;
+    const isPhonePe = templateId === 'driver' && formData.receiptType === 'PhonePe Payment';
     
     setExporting(true);
     try {
-      await exportBill(exportElement, format, template.id, isPhonePe);
+      await exportBill(exportElement, format, template.id, true);
       logDownload(userEmail, template.name || templateId, format);
     } catch (error) {
       console.error('Export failed:', error);
