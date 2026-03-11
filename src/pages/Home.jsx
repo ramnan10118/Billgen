@@ -1,13 +1,11 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { useProfileStore } from '../context/store';
 import { getAllTemplates } from '../templates/templateConfig';
 import Layout from '../components/Layout';
 import './Home.css';
 
 const Home = () => {
   const templates = getAllTemplates();
-  const { isProfileComplete } = useProfileStore();
 
   return (
     <Layout>
@@ -20,24 +18,6 @@ const Home = () => {
           <h1>Generate a Bill</h1>
           <p>&gt; Select a template to get started</p>
         </motion.div>
-        
-        {!isProfileComplete() && (
-          <motion.div 
-            className="profile-nudge"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            <span className="nudge-icon">⚠</span>
-            <div className="nudge-content">
-              <strong>Profile Incomplete</strong>
-              <p>Configure your profile to auto-fill bill data</p>
-            </div>
-            <Link to="/settings" className="btn btn-danger btn-sm">
-              Configure
-            </Link>
-          </motion.div>
-        )}
         
         <div className="templates-grid">
           {templates.map((template, index) => (
