@@ -2,8 +2,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { getAllTemplates } from '../templates/templateConfig';
+import { useAccessStore } from '../context/store';
 import Layout from '../components/Layout';
 import './Home.css';
+
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 const SUGGESTION_OPTIONS = [
   'Electricity Bill',
@@ -16,8 +19,21 @@ const SUGGESTION_OPTIONS = [
   'Gym Membership',
 ];
 
+const submitSuggestion = async (email, suggestion) => {
+  try {
+    await fetch(`${API_URL}/api/submit-suggestion`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, suggestion }),
+    });
+  } catch (error) {
+    console.error('Failed to submit suggestion:', error);
+  }
+};
+
 const Home = () => {
   const templates = getAllTemplates();
+  const { email: userEmail } = useAccessStore();
   const [votes, setVotes] = useState(() => {
     const saved = localStorage.getItem('billgen-votes');
     return saved ? JSON.parse(saved) : [];
@@ -26,18 +42,24 @@ const Home = () => {
   const [suggestionSent, setSuggestionSent] = useState(false);
 
   const toggleVote = (option) => {
-    const updated = votes.includes(option)
+    const isRemoving = votes.includes(option);
+    const updated = isRemoving
       ? votes.filter(v => v !== option)
       : [...votes, option];
     setVotes(updated);
     localStorage.setItem('billgen-votes', JSON.stringify(updated));
+    if (!isRemoving) {
+      submitSuggestion(userEmail, option);
+    }
   };
 
   const handleCustomSubmit = () => {
     if (!customSuggestion.trim()) return;
-    const updated = [...votes, customSuggestion.trim()];
+    const text = customSuggestion.trim();
+    const updated = [...votes, text];
     setVotes(updated);
     localStorage.setItem('billgen-votes', JSON.stringify(updated));
+    submitSuggestion(userEmail, text);
     setCustomSuggestion('');
     setSuggestionSent(true);
     setTimeout(() => setSuggestionSent(false), 2000);
