@@ -885,9 +885,8 @@
 }
 
 .shell-pecten {
-  width: auto;
   height: 73px;
-  max-width: 73px;
+  width: auto;
   display: block;
 }
 
@@ -965,11 +964,9 @@
 
 /* Company Info */
 .airtel-company {
-  position: absolute;
-  top: 77px;
-  left: 30px;
-  right: 30px;
+  padding: 77px 30px 0;
   text-align: center;
+  position: relative;
   z-index: 1;
 }
 
@@ -993,23 +990,19 @@
 
 /* Thank you message */
 .airtel-thankyou {
-  position: absolute;
-  top: 139px;
-  left: 30px;
-  right: 30px;
+  padding: 16px 30px 8px;
   font-size: 11px;
   font-weight: 400;
   line-height: 1.36em;
   color: #000000;
+  position: relative;
   z-index: 1;
 }
 
 /* Details Table */
 .airtel-table {
-  position: absolute;
-  top: 164px;
-  left: 30px;
-  right: 30px;
+  margin: 0 30px;
+  position: relative;
   z-index: 1;
 }
 
@@ -1042,10 +1035,8 @@
 
 /* Terms and Conditions Section */
 .airtel-terms-section {
-  position: absolute;
-  top: 440px;
-  left: 30px;
-  right: 30px;
+  margin: 20px 30px 0;
+  position: relative;
   z-index: 1;
 }
 
@@ -1068,52 +1059,44 @@
 
 /* Discrepancy notice */
 .airtel-discrepancy {
-  position: absolute;
-  top: 540px;
-  left: 30px;
-  right: 30px;
+  margin: 20px 30px 0;
   text-align: center;
   font-size: 11px;
   font-weight: 400;
   line-height: 1.36em;
   color: #000000;
+  position: relative;
   z-index: 1;
 }
 
 /* Airtel Thanks App info */
 .airtel-app-info {
-  position: absolute;
-  top: 565px;
-  left: 30px;
-  right: 30px;
+  margin: 8px 30px 0;
   font-size: 11px;
   font-weight: 400;
   line-height: 1.36em;
   color: #FF0000;
   text-align: center;
+  position: relative;
   z-index: 1;
 }
 
 /* System generated notice */
 .airtel-notice {
-  position: absolute;
-  top: 620px;
-  left: 30px;
-  right: 30px;
+  margin: 24px 30px 0;
   font-size: 11px;
   font-weight: 400;
   line-height: 1.36em;
   color: #000000;
+  position: relative;
   z-index: 1;
 }
 
 /* Footer */
 .airtel-footer {
-  position: absolute;
-  top: 680px;
-  left: 30px;
-  right: 30px;
+  margin: 24px 30px 0;
   text-align: center;
+  position: relative;
   z-index: 1;
 }
 

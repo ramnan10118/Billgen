@@ -28,17 +28,12 @@ export const exportToPDF = async (element, filename = 'bill.pdf', fitToContent =
       useCORS: true,
       logging: false,
       backgroundColor: bgColor,
-      width: fitToContent ? elementWidth : undefined,
-      height: fitToContent ? elementHeight : undefined,
+      width: elementWidth,
+      height: elementHeight,
     },
-    jsPDF: fitToContent ? { 
+    jsPDF: { 
       unit: 'mm', 
       format: [pxToMm(elementWidth), pxToMm(elementHeight)], 
-      orientation: 'portrait',
-      compress: true
-    } : { 
-      unit: 'mm', 
-      format: 'a4', 
       orientation: 'portrait',
       compress: true
     },
@@ -59,12 +54,18 @@ export const exportToImage = async (element, filename = 'bill.png', format = 'pn
     throw new Error('No element provided for image export');
   }
 
+  const computedBg = window.getComputedStyle(element).backgroundColor;
+  const isDarkBg = computedBg && (computedBg.includes('0, 0, 0') || computedBg === 'rgb(0, 0, 0)');
+  const bgColor = transparentBg ? null : (isDarkBg ? '#000000' : '#ffffff');
+
   try {
     const canvas = await html2canvas(element, {
       scale: 1.5,
       useCORS: true,
       logging: false,
-      backgroundColor: transparentBg ? null : '#ffffff',
+      backgroundColor: bgColor,
+      width: element.scrollWidth,
+      height: element.scrollHeight,
     });
 
     const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
