@@ -1,7 +1,6 @@
-import { getSheets, SPREADSHEET_ID } from './_sheets.js';
+import { logDownload, incrementDownloads } from './db/users.js';
 
 export default async function handler(req, res) {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -21,19 +20,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const sheets = getSheets();
-    const timestamp = new Date().toISOString();
+    await logDownload({ email, template, format });
+    const result = await incrementDownloads(email);
 
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: 'Downloads!A:D',
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [[email, template, format, timestamp]],
-      },
+    return res.status(200).json({
+      success: true,
+      ...result,
     });
-
-    return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Download log error:', error);
     return res.status(500).json({ error: 'Failed to log download', details: error.message });

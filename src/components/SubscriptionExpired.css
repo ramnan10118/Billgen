@@ -1,0 +1,236 @@
+.sub-expired {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #0a0a0c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sub-expired-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sub-expired-grid {
+  position: absolute;
+  inset: -40px;
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(rgba(6, 182, 212, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.04) 1px, transparent 1px);
+}
+
+.sub-expired-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(6, 182, 212, 0.06) 70%, rgba(6, 82, 112, 0.12) 100%);
+  animation: subVignettePulse 4s ease-in-out infinite;
+}
+
+@keyframes subVignettePulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.sub-expired-scanbeam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.3), transparent);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+  animation: subScan 6s linear infinite;
+}
+
+@keyframes subScan {
+  0% { top: -2px; }
+  100% { top: 100%; }
+}
+
+.sub-expired-card {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+  padding: var(--space-2xl);
+  background: linear-gradient(135deg, #1e2029 0%, #111216 100%);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  box-shadow:
+    inset 1px 1px 0px rgba(255, 255, 255, 0.05),
+    0 20px 60px -15px rgba(0, 0, 0, 0.8);
+}
+
+.sub-expired-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ec4899, transparent);
+  box-shadow: 0 0 10px #ec4899;
+}
+
+.sub-expired-icon {
+  width: 64px;
+  height: 64px;
+  border: 1px solid rgba(236, 72, 153, 0.4);
+  background: rgba(236, 72, 153, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  transform: rotate(45deg);
+}
+
+.sub-expired-icon span {
+  font-size: 1.75rem;
+  transform: rotate(-45deg);
+  filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.5));
+}
+
+.sub-expired-title {
+  font-family: var(--font-mono);
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
+  letter-spacing: 0.15em;
+  color: #ec4899;
+  text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+  margin-bottom: 12px;
+}
+
+.sub-expired-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.sub-expired-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  margin-bottom: 24px;
+}
+
+.sub-expired-currency {
+  font-size: 1.5rem;
+  color: #06b6d4;
+  font-weight: 600;
+}
+
+.sub-expired-amount {
+  font-size: 3rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1;
+}
+
+.sub-expired-period {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-left: 4px;
+}
+
+.sub-expired-error {
+  background: rgba(236, 72, 153, 0.1);
+  border: 1px solid rgba(236, 72, 153, 0.3);
+  color: #f9a8d4;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  margin-bottom: 16px;
+}
+
+.sub-expired-btn {
+  width: 100%;
+  height: 50px;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  position: relative;
+  overflow: hidden;
+}
+
+.sub-expired-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.sub-expired-btn:hover::after {
+  left: 100%;
+}
+
+.sub-expired-note {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 16px;
+  letter-spacing: 0.05em;
+}
+
+/* Renewal Banner (non-blocking) */
+.renewal-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: linear-gradient(90deg, rgba(236, 72, 153, 0.12), rgba(6, 182, 212, 0.12));
+  border-bottom: 1px solid rgba(236, 72, 153, 0.25);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  backdrop-filter: blur(8px);
+}
+
+.renewal-banner-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #f9a8d4;
+  letter-spacing: 0.05em;
+}
+
+.renewal-banner-btn {
+  background: transparent;
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  color: #06b6d4;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.renewal-banner-btn:hover {
+  border-color: #06b6d4;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+}
+
+.renewal-banner-dismiss {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 2px 6px;
+  transition: color 0.2s;
+}
+
+.renewal-banner-dismiss:hover {
+  color: #ec4899;
+}

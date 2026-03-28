@@ -1,6 +1,3 @@
-// Access validation via backend API
-// Backend verifies email against Google Sheet using service account
-
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 export const validateEmailAccess = async (email) => {
@@ -16,10 +13,19 @@ export const validateEmailAccess = async (email) => {
     }
 
     const data = await response.json();
-    return { valid: data.valid, devMode: false };
+    return {
+      valid: data.valid,
+      tier: data.tier,
+      downloadsUsed: data.downloadsUsed,
+      downloadsLimit: data.downloadsLimit,
+      isSubscribed: data.isSubscribed,
+      subscribedUntil: data.subscribedUntil,
+      daysRemaining: data.daysRemaining,
+      renewalDue: data.renewalDue,
+    };
   } catch (error) {
     console.error('Access validation error:', error);
-    return { valid: null, error: error.message, devMode: false };
+    return { valid: null, error: error.message };
   }
 };
 

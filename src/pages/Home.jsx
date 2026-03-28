@@ -32,8 +32,8 @@ const submitSuggestion = async (email, suggestion) => {
 };
 
 const Home = () => {
-  const templates = getAllTemplates();
-  const { email: userEmail } = useAccessStore();
+  const { email: userEmail, tier } = useAccessStore();
+  const templates = getAllTemplates(tier);
   const [submitted, setSubmitted] = useState(() => {
     const saved = localStorage.getItem('billgen-submitted');
     return saved ? JSON.parse(saved) : [];

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useProfileStore, useTemplateDefaultsStore, useUIStore } from '../context/store';
-import { getTemplate } from '../templates/templateConfig';
+import { getTemplate, isTierAllowed } from '../templates/templateConfig';
 import { 
   getDatePresets, 
   generateBillNumber, 
@@ -21,6 +21,7 @@ import { useAccessStore } from '../context/store';
 import Layout from '../components/Layout';
 import BillPreview from '../components/BillPreview';
 import DatePicker from '../components/DatePicker';
+import PaywallModal from '../components/PaywallModal';
 import './Generator.css';
 
 const Generator = () => {
@@ -32,9 +33,10 @@ const Generator = () => {
   const { profile } = useProfileStore();
   const { getDefaults, saveDefaults } = useTemplateDefaultsStore();
   const { isExporting, setExporting } = useUIStore();
-  const { email: userEmail } = useAccessStore();
+  const { email: userEmail, tier, needsSubscription, updateDownloads, updateSubscription } = useAccessStore();
   
   const [formData, setFormData] = useState({});
+  const [showPaywall, setShowPaywall] = useState(false);
   const datePresets = getDatePresets();
 
   const autoGenerators = {
@@ -93,12 +95,12 @@ const Generator = () => {
     setFormData(initialData);
   }, [templateId, template, profile]);
 
-  if (!template) {
+  if (!template || !isTierAllowed(templateId, tier)) {
     return (
       <Layout>
         <div className="generator-not-found">
           <h2>Template not found</h2>
-          <p>The template "{templateId}" doesn't exist.</p>
+          <p>The template "{templateId}" doesn't exist or is not available for your account.</p>
           <Link to="/home" className="btn btn-primary">Back to Templates</Link>
         </div>
       </Layout>
@@ -124,11 +126,14 @@ const Generator = () => {
 
   const handleExport = async (format) => {
     if (!previewRef.current || isExporting) return;
+
+    if (needsSubscription()) {
+      setShowPaywall(true);
+      return;
+    }
     
-    // Save current values as defaults for next time
     saveDefaults(templateId, formData);
     
-    // Target the actual template element to avoid wrapper whitespace
     const templateClass = {
       driver: formData.receiptType === 'PhonePe Payment' ? '.template-phonepe' : '.template-driver',
       playo: '.template-playo',
@@ -137,18 +142,30 @@ const Generator = () => {
     }[templateId];
     
     const exportElement = (templateClass && previewRef.current.querySelector(templateClass)) || previewRef.current;
-    const isPhonePe = templateId === 'driver' && formData.receiptType === 'PhonePe Payment';
     
     setExporting(true);
     try {
       await exportBill(exportElement, format, template.id, true);
-      logDownload(userEmail, template.name || templateId, format);
+      const result = await logDownload(userEmail, template.name || templateId, format);
+      if (result) {
+        updateDownloads(result.downloadsUsed, result.requiresSubscription);
+      }
     } catch (error) {
       console.error('Export failed:', error);
       alert('Export failed. Please try again.');
     } finally {
       setExporting(false);
     }
+  };
+
+  const handleSubscribed = () => {
+    setShowPaywall(false);
+    updateSubscription({
+      isSubscribed: true,
+      subscribedUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      daysRemaining: 30,
+      renewalDue: false,
+    });
   };
 
   // Check if a field should be visible based on showWhen condition
@@ -419,6 +436,12 @@ const Generator = () => {
           </motion.div>
         </div>
       </div>
+
+      <PaywallModal
+        isOpen={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        onSubscribed={handleSubscribed}
+      />
     </Layout>
   );
 };

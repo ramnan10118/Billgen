@@ -7,18 +7,16 @@ export const TEMPLATES = {
     icon: '🚗',
     description: 'Driver salary declaration & receipt',
     color: '#374151',
+    tier: 1,
     fields: [
       { id: 'receiptType', label: 'Receipt Type', type: 'select', options: ['Salary Receipt', 'PhonePe Payment'], default: 'Salary Receipt' },
-      // Common fields
       { id: 'driverName', label: 'Driver/Recipient Name', type: 'text', profileKey: 'driverName' },
       { id: 'salaryAmount', label: 'Amount (₹)', type: 'currency', default: '25000' },
-      // Salary Receipt fields
       { id: 'employeeName', label: 'Employee Name (You)', type: 'text', profileKey: 'fullName', showWhen: { field: 'receiptType', value: 'Salary Receipt' } },
       { id: 'month', label: 'For Month', type: 'period', showWhen: { field: 'receiptType', value: 'Salary Receipt' } },
       { id: 'receiptDate', label: 'Receipt Date', type: 'date', showWhen: { field: 'receiptType', value: 'Salary Receipt' } },
       { id: 'vehicleNumber', label: 'Vehicle Number', type: 'text', profileKey: 'vehicleNumber', showWhen: { field: 'receiptType', value: 'Salary Receipt' } },
       { id: 'showSignature', label: 'Show Signature Line', type: 'toggle', default: true, showWhen: { field: 'receiptType', value: 'Salary Receipt' } },
-      // PhonePe fields
       { id: 'recipientPhone', label: 'Recipient Phone', type: 'text', default: '+919176657929', showWhen: { field: 'receiptType', value: 'PhonePe Payment' } },
       { id: 'transactionId', label: 'Transaction ID', type: 'text', autoGenerate: 'phonePeTxnId', showWhen: { field: 'receiptType', value: 'PhonePe Payment' } },
       { id: 'utr', label: 'UTR Number', type: 'text', autoGenerate: 'utrNumber', showWhen: { field: 'receiptType', value: 'PhonePe Payment' } },
@@ -34,6 +32,7 @@ export const TEMPLATES = {
     icon: '⚽',
     description: 'Booking confirmation',
     color: '#10B981',
+    tier: 3,
     fields: [
       { id: 'customerName', label: 'Your Name', type: 'text', profileKey: 'fullName' },
       { id: 'sportType', label: 'Sport', type: 'select', options: ['Football', 'Badminton', 'Tennis', 'Cricket', 'Basketball', 'Swimming'] },
@@ -58,6 +57,7 @@ export const TEMPLATES = {
     icon: '⛽',
     description: 'Fuel station receipt',
     color: '#FBBF24',
+    tier: 3,
     fields: [
       { id: 'transactionDate', label: 'Transaction Date', type: 'date' },
       { id: 'transactionTime', label: 'Transaction Time', type: 'text', default: '12:32' },
@@ -81,6 +81,7 @@ export const TEMPLATES = {
     icon: '🌐',
     description: 'Payment receipt',
     color: '#E50914',
+    tier: 3,
     fields: [
       { id: 'customerName', label: 'Customer Name', type: 'text', profileKey: 'fullName' },
       { id: 'customerNumber', label: 'Customer Number', type: 'text' },
@@ -99,6 +100,16 @@ export const TEMPLATES = {
 
 export const getTemplate = (id) => TEMPLATES[id] || null;
 
-export const getAllTemplates = () => Object.values(TEMPLATES);
+export const getAllTemplates = (userTier) => {
+  const all = Object.values(TEMPLATES);
+  if (userTier === undefined || userTier === null) return all;
+  return all.filter(t => t.tier <= userTier);
+};
 
 export const getTemplateIds = () => Object.keys(TEMPLATES);
+
+export const isTierAllowed = (templateId, userTier) => {
+  const template = TEMPLATES[templateId];
+  if (!template) return false;
+  return userTier >= template.tier;
+};

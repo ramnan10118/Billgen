@@ -48,11 +48,37 @@ export const useAccessStore = create(
       lastValidated: null,
       gracePeriodHours: 24,
 
-      setAccess: (email) =>
+      tier: 1,
+      downloadsUsed: 0,
+      downloadsLimit: 3,
+      isSubscribed: false,
+      subscribedUntil: null,
+      daysRemaining: null,
+      renewalDue: false,
+
+      setAccess: (email, extra = {}) =>
         set({
           email,
           isValidated: true,
           lastValidated: Date.now(),
+          tier: extra.tier ?? 1,
+          downloadsUsed: extra.downloadsUsed ?? 0,
+          downloadsLimit: extra.downloadsLimit ?? 3,
+          isSubscribed: extra.isSubscribed ?? false,
+          subscribedUntil: extra.subscribedUntil ?? null,
+          daysRemaining: extra.daysRemaining ?? null,
+          renewalDue: extra.renewalDue ?? false,
+        }),
+
+      updateDownloads: (downloadsUsed, requiresSubscription) =>
+        set({ downloadsUsed, ...(requiresSubscription !== undefined ? { isSubscribed: !requiresSubscription } : {}) }),
+
+      updateSubscription: (fields) =>
+        set({
+          isSubscribed: fields.isSubscribed ?? get().isSubscribed,
+          subscribedUntil: fields.subscribedUntil ?? get().subscribedUntil,
+          daysRemaining: fields.daysRemaining ?? get().daysRemaining,
+          renewalDue: fields.renewalDue ?? get().renewalDue,
         }),
 
       clearAccess: () =>
@@ -60,6 +86,13 @@ export const useAccessStore = create(
           email: null,
           isValidated: false,
           lastValidated: null,
+          tier: 1,
+          downloadsUsed: 0,
+          downloadsLimit: 3,
+          isSubscribed: false,
+          subscribedUntil: null,
+          daysRemaining: null,
+          renewalDue: false,
         }),
 
       isWithinGracePeriod: () => {
@@ -67,6 +100,11 @@ export const useAccessStore = create(
         if (!lastValidated) return false;
         const hoursSinceValidation = (Date.now() - lastValidated) / (1000 * 60 * 60);
         return hoursSinceValidation < gracePeriodHours;
+      },
+
+      needsSubscription: () => {
+        const { downloadsUsed, downloadsLimit, isSubscribed } = get();
+        return downloadsUsed >= downloadsLimit && !isSubscribed;
       },
     }),
     {
