@@ -37,7 +37,7 @@ const Layout = ({ children }) => {
               <span className="logo-icon">⚡</span>
             </div>
             <div className="logo-text-group">
-              <span className="logo-text">Bill<span className="logo-accent">Gen</span></span>
+              <span className="logo-text">Raven<span className="logo-accent">log</span></span>
               <span className="logo-version">SYS V.1.0 // ONLINE</span>
             </div>
           </Link>
@@ -69,7 +69,21 @@ const Layout = ({ children }) => {
       <main className="main">
         {children}
       </main>
-      
+
+      <footer className="layout-footer-minimal metallic-bg">
+        <div className="layout-footer-minimal-streak" />
+        <div className="layout-footer-minimal-inner">
+          <span className="layout-footer-minimal-left">// Ravenlog v2.0</span>
+          <div className="layout-footer-minimal-right">
+            <Link to="/terms" className="layout-footer-minimal-link">
+              Terms of Service
+            </Link>
+            <span className="layout-footer-minimal-email">
+              {email || '—'}
+            </span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

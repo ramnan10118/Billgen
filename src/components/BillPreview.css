@@ -37,7 +37,7 @@
   line-height: 1.5;
 }
 
-.bill-preview-phonepe {
+.bill-preview-upi {
   background: #000;
   width: 420px;
 }
@@ -52,6 +52,7 @@
    DRIVER SALARY RECEIPT
    ============================================ */
 .template-driver {
+  position: relative;
   padding: 40px;
   min-height: 600px;
   background: white;
@@ -169,7 +170,7 @@
 /* ============================================
    PHONEPE PAYMENT RECEIPT
    ============================================ */
-.template-phonepe {
+.template-upi {
   width: 420px;
   background: #000;
   margin: 0;
@@ -677,6 +678,7 @@
    Figma specs: 595 x 956
    ============================================ */
 .template-shell {
+  position: relative;
   width: 595px;
   min-height: 956px;
   background: #FFFFFF;
@@ -873,15 +875,15 @@
 }
 
 .shell-footer {
-  margin-top: auto;
-  padding-top: 80px;
+  margin-top: 48px;
+  padding-top: 0;
   text-align: center;
 }
 
 .shell-logo {
   display: flex;
   justify-content: center;
-  margin-bottom: 0;
+  margin-bottom: 8px;
 }
 
 .shell-pecten {
@@ -910,11 +912,11 @@
 }
 
 /* ============================================
-   AIRTEL BROADBAND RECEIPT
+   BROADBAND / TELECOM PAYMENT RECEIPT
    Based on Figma: 595x842px (A4)
    Font: Tondo, 11px content / 13px headers
    ============================================ */
-.template-airtel {
+.template-broadband {
   position: relative;
   width: 100%;
   max-width: 595px;
@@ -928,7 +930,7 @@
 }
 
 /* Paid Watermark */
-.airtel-watermark {
+.bb-watermark {
   position: absolute;
   top: 200px;
   left: 30px;
@@ -945,8 +947,8 @@
   transform-origin: center center;
 }
 
-/* Logo */
-.airtel-logo {
+/* Tier-3 carrier mark */
+.bb-carrier-mark {
   position: absolute;
   top: 32px;
   right: 20px;
@@ -955,7 +957,7 @@
   z-index: 1;
 }
 
-.airtel-logo img {
+.bb-carrier-mark img {
   max-width: 100%;
   max-height: 100%;
   width: auto;
@@ -963,14 +965,14 @@
 }
 
 /* Company Info */
-.airtel-company {
+.bb-company {
   padding: 77px 30px 0;
   text-align: center;
   position: relative;
   z-index: 1;
 }
 
-.airtel-company-name {
+.bb-company-name {
   font-size: 13px;
   font-weight: 400;
   line-height: 1.2em;
@@ -979,7 +981,7 @@
   color: #000000;
 }
 
-.airtel-doc-type {
+.bb-doc-type {
   font-size: 13px;
   font-weight: 400;
   line-height: 1.2em;
@@ -989,7 +991,7 @@
 }
 
 /* Thank you message */
-.airtel-thankyou {
+.bb-thankyou {
   padding: 16px 30px 8px;
   font-size: 11px;
   font-weight: 400;
@@ -1000,23 +1002,23 @@
 }
 
 /* Details Table */
-.airtel-table {
+.bb-table {
   margin: 0 30px;
   position: relative;
   z-index: 1;
 }
 
-.airtel-row {
+.bb-row {
   display: flex;
   border: 0.6px solid #000000;
   margin-top: -0.6px;
 }
 
-.airtel-row:first-child {
+.bb-row:first-child {
   margin-top: 0;
 }
 
-.airtel-cell {
+.bb-cell {
   padding: 6px 8px;
   font-size: 11px;
   font-weight: 400;
@@ -1024,23 +1026,23 @@
   color: #000000;
 }
 
-.airtel-cell.airtel-label {
+.bb-cell.bb-label {
   flex: 0 0 50%;
   border-right: 0.6px solid #000000;
 }
 
-.airtel-cell.airtel-value {
+.bb-cell.bb-value {
   flex: 0 0 50%;
 }
 
 /* Terms and Conditions Section */
-.airtel-terms-section {
+.bb-terms-section {
   margin: 20px 30px 0;
   position: relative;
   z-index: 1;
 }
 
-.airtel-terms-title {
+.bb-terms-title {
   font-size: 13px;
   font-weight: 400;
   line-height: 1.2em;
@@ -1049,7 +1051,7 @@
   color: #000000;
 }
 
-.airtel-terms-text {
+.bb-terms-text {
   font-size: 11px;
   font-weight: 400;
   line-height: 1.36em;
@@ -1058,7 +1060,7 @@
 }
 
 /* Discrepancy notice */
-.airtel-discrepancy {
+.bb-discrepancy {
   margin: 20px 30px 0;
   text-align: center;
   font-size: 11px;
@@ -1069,8 +1071,8 @@
   z-index: 1;
 }
 
-/* Airtel Thanks App info */
-.airtel-app-info {
+/* App help path */
+.bb-app-info {
   margin: 8px 30px 0;
   font-size: 11px;
   font-weight: 400;
@@ -1082,7 +1084,7 @@
 }
 
 /* System generated notice */
-.airtel-notice {
+.bb-notice {
   margin: 24px 30px 0;
   font-size: 11px;
   font-weight: 400;
@@ -1093,14 +1095,14 @@
 }
 
 /* Footer */
-.airtel-footer {
+.bb-footer {
   margin: 24px 30px 0;
   text-align: center;
   position: relative;
   z-index: 1;
 }
 
-.airtel-footer p {
+.bb-footer p {
   font-size: 11px;
   font-weight: 400;
   line-height: 1.36em;
@@ -1158,4 +1160,93 @@
 
 .generic-body .value {
   font-size: 13px;
+}
+
+/* User business logo — slot per template */
+.bill-business-logo-img {
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/*
+ * Playo business mark: larger slot than legacy 92×38 so uploads match tier-3 mark legibility.
+ * Stays below the banner (starts top: 113px).
+ */
+.template-playo .bill-business-logo-wrap--playo {
+  position: absolute;
+  top: 33px;
+  left: 48px;
+  right: auto;
+  width: 220px;
+  height: 72px;
+  z-index: 4;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.template-playo .bill-business-logo-wrap--playo .bill-business-logo-img {
+  max-width: 220px;
+  max-height: 72px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Tier-3 Playo mark sits to the right of the user slot: 48 + 220 + gap */
+.template-playo .playo-logo--with-business {
+  left: 280px;
+}
+
+/* Shell: centered above thank-you / brand footer block */
+.template-shell .bill-business-logo-wrap--shell {
+  position: static;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  z-index: auto;
+  pointer-events: none;
+}
+
+/* Match visual weight of .shell-pecten (73px tall) so uploads read as clearly as the tier-3 mark */
+.template-shell .bill-business-logo-wrap--shell .bill-business-logo-img {
+  max-height: 73px;
+  max-width: 240px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/*
+ * Business upload: ~2× carrier slot (87×39) for legibility; align to top like the tier-3 mark.
+ */
+.template-broadband .bill-business-logo-wrap--broadband {
+  position: absolute;
+  top: 32px;
+  right: 20px;
+  width: 200px;
+  height: 78px;
+  z-index: 4;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.template-broadband .bill-business-logo-wrap--broadband .bill-business-logo-img {
+  max-width: 200px;
+  max-height: 78px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Leave room when carrier mark sits top-right (tier 3+): 87px mark + margin */
+.template-broadband .bill-business-logo-wrap--broadband.bill-business-logo-wrap--broadband-offset {
+  right: 124px;
 }

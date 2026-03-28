@@ -7,22 +7,34 @@ export const TEMPLATES = {
     icon: '🚗',
     description: 'Driver salary declaration & receipt',
     color: '#374151',
-    tier: 1,
     fields: [
-      { id: 'receiptType', label: 'Receipt Type', type: 'select', options: ['Salary Receipt', 'PhonePe Payment'], default: 'Salary Receipt' },
       { id: 'driverName', label: 'Driver/Recipient Name', type: 'text', profileKey: 'driverName' },
       { id: 'salaryAmount', label: 'Amount (₹)', type: 'currency', default: '25000' },
-      { id: 'employeeName', label: 'Employee Name (You)', type: 'text', profileKey: 'fullName', showWhen: { field: 'receiptType', value: 'Salary Receipt' } },
-      { id: 'month', label: 'For Month', type: 'period', showWhen: { field: 'receiptType', value: 'Salary Receipt' } },
-      { id: 'receiptDate', label: 'Receipt Date', type: 'date', showWhen: { field: 'receiptType', value: 'Salary Receipt' } },
-      { id: 'vehicleNumber', label: 'Vehicle Number', type: 'text', profileKey: 'vehicleNumber', showWhen: { field: 'receiptType', value: 'Salary Receipt' } },
-      { id: 'showSignature', label: 'Show Signature Line', type: 'toggle', default: true, showWhen: { field: 'receiptType', value: 'Salary Receipt' } },
-      { id: 'recipientPhone', label: 'Recipient Phone', type: 'text', default: '+919176657929', showWhen: { field: 'receiptType', value: 'PhonePe Payment' } },
-      { id: 'transactionId', label: 'Transaction ID', type: 'text', autoGenerate: 'phonePeTxnId', showWhen: { field: 'receiptType', value: 'PhonePe Payment' } },
-      { id: 'utr', label: 'UTR Number', type: 'text', autoGenerate: 'utrNumber', showWhen: { field: 'receiptType', value: 'PhonePe Payment' } },
-      { id: 'bankAccount', label: 'Bank Account (masked)', type: 'text', default: 'XXXXXX8331', showWhen: { field: 'receiptType', value: 'PhonePe Payment' } },
-      { id: 'bankName', label: 'Bank Name', type: 'text', default: 'ICICI', showWhen: { field: 'receiptType', value: 'PhonePe Payment' } },
-      { id: 'paymentDateTime', label: 'Payment Date & Time', type: 'text', default: '10:12 am on 10 Apr 2025', showWhen: { field: 'receiptType', value: 'PhonePe Payment' } },
+      { id: 'employeeName', label: 'Employee Name (You)', type: 'text', profileKey: 'fullName' },
+      { id: 'month', label: 'For Month', type: 'period' },
+      { id: 'receiptDate', label: 'Receipt Date', type: 'date' },
+      { id: 'vehicleNumber', label: 'Vehicle Number', type: 'text', profileKey: 'vehicleNumber' },
+      { id: 'showSignature', label: 'Show Signature Line', type: 'toggle', default: true },
+    ],
+  },
+
+  /** Tier 3+ only — see getAllTemplates / Generator gate */
+  upi: {
+    id: 'upi',
+    name: 'UPI Payment Receipt',
+    icon: '📱',
+    description: 'UPI-style payment confirmation',
+    color: '#2E7D32',
+    minimumTier: 3,
+    fields: [
+      { id: 'driverName', label: 'Driver/Recipient Name', type: 'text', profileKey: 'driverName' },
+      { id: 'salaryAmount', label: 'Amount (₹)', type: 'currency', default: '25000' },
+      { id: 'recipientPhone', label: 'Recipient Phone', type: 'text', default: '+919176657929' },
+      { id: 'transactionId', label: 'Transaction ID', type: 'text', autoGenerate: 'phonePeTxnId' },
+      { id: 'utr', label: 'UTR Number', type: 'text', autoGenerate: 'utrNumber' },
+      { id: 'bankAccount', label: 'Bank Account (masked)', type: 'text', default: 'XXXXXX8331' },
+      { id: 'bankName', label: 'Bank Name', type: 'text', default: 'ICICI' },
+      { id: 'paymentDateTime', label: 'Payment Date & Time', type: 'text', default: '10:12 am on 10 Apr 2025' },
     ],
   },
 
@@ -32,7 +44,6 @@ export const TEMPLATES = {
     icon: '⚽',
     description: 'Booking confirmation',
     color: '#10B981',
-    tier: 3,
     fields: [
       { id: 'customerName', label: 'Your Name', type: 'text', profileKey: 'fullName' },
       { id: 'sportType', label: 'Sport', type: 'select', options: ['Football', 'Badminton', 'Tennis', 'Cricket', 'Basketball', 'Swimming'] },
@@ -57,7 +68,6 @@ export const TEMPLATES = {
     icon: '⛽',
     description: 'Fuel station receipt',
     color: '#FBBF24',
-    tier: 3,
     fields: [
       { id: 'transactionDate', label: 'Transaction Date', type: 'date' },
       { id: 'transactionTime', label: 'Transaction Time', type: 'text', default: '12:32' },
@@ -75,18 +85,17 @@ export const TEMPLATES = {
     ],
   },
 
-  airtel: {
-    id: 'airtel',
+  broadband: {
+    id: 'broadband',
     name: 'Broadband Receipt',
     icon: '🌐',
     description: 'Payment receipt',
     color: '#E50914',
-    tier: 3,
     fields: [
       { id: 'customerName', label: 'Customer Name', type: 'text', profileKey: 'fullName' },
       { id: 'customerNumber', label: 'Customer Number', type: 'text' },
-      { id: 'receiptNo', label: 'Receipt No', type: 'text', autoGenerate: 'airtelReceiptNo' },
-      { id: 'orderNumber', label: 'Order Number', type: 'text', autoGenerate: 'airtelOrderNo' },
+      { id: 'receiptNo', label: 'Receipt No', type: 'text', autoGenerate: 'broadbandReceiptNo' },
+      { id: 'orderNumber', label: 'Order Number', type: 'text', autoGenerate: 'broadbandOrderNo' },
       { id: 'lineOfBusiness', label: 'Line of Business', type: 'text', default: 'Broadband + Mobile' },
       { id: 'paymentType', label: 'Payment Type', type: 'text', default: 'Bill Payment' },
       { id: 'paymentDate', label: 'Payment Date', type: 'date' },
@@ -100,16 +109,15 @@ export const TEMPLATES = {
 
 export const getTemplate = (id) => TEMPLATES[id] || null;
 
-export const getAllTemplates = (userTier) => {
-  const all = Object.values(TEMPLATES);
-  if (userTier === undefined || userTier === null) return all;
-  return all.filter(t => t.tier <= userTier);
+/**
+ * Templates visible on Home. Pass user tier from access store.
+ * Templates with `minimumTier` (e.g. UPI receipt = 3) are omitted for lower tiers.
+ */
+export const getAllTemplates = (userTier = 1) => {
+  const t = Number(userTier) || 1;
+  return Object.values(TEMPLATES).filter(
+    (template) => !template.minimumTier || t >= template.minimumTier
+  );
 };
 
 export const getTemplateIds = () => Object.keys(TEMPLATES);
-
-export const isTierAllowed = (templateId, userTier) => {
-  const template = TEMPLATES[templateId];
-  if (!template) return false;
-  return userTier >= template.tier;
-};

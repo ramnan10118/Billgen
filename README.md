@@ -1,4 +1,4 @@
-# BillGen - Bill Template Generator
+# Ravenlog — Document template generator
 
 A personal tool to quickly generate bills and documents for monthly reimbursement submissions.
 

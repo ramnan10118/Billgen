@@ -35,6 +35,7 @@ export default async function handler(req, res) {
       subscribedUntil: user.subscribedUntil,
       daysRemaining: user.daysRemaining,
       renewalDue: user.renewalDue,
+      tier3AckAccepted: user.tier3AckAccepted,
     });
   } catch (error) {
     console.error('Access check error:', error);

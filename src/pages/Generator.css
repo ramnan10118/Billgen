@@ -73,7 +73,8 @@
 }
 
 .form-section,
-.export-section {
+.export-section,
+.logo-section {
   background: linear-gradient(135deg, #1e2029 0%, #111216 100%);
   border: 1px solid var(--border-color);
   padding: var(--space-lg);
@@ -84,7 +85,8 @@
   position: relative;
 }
 
-.form-section::before {
+.form-section::before,
+.logo-section::before {
   content: '';
   position: absolute;
   top: 0;
@@ -105,7 +107,8 @@
 }
 
 .form-section h3,
-.export-section h3 {
+.export-section h3,
+.logo-section h3 {
   font-size: 0.8125rem;
   font-weight: 700;
   margin-bottom: var(--space-lg);
@@ -119,7 +122,8 @@
   gap: var(--space-sm);
 }
 
-.form-section h3 {
+.form-section h3,
+.logo-section h3 {
   color: #06b6d4;
 }
 
@@ -331,13 +335,13 @@
   overflow: hidden;
 }
 
-.preview-wrapper-phonepe {
+.preview-wrapper-upi {
   background: #000;
   width: 420px;
   margin: 0 auto;
 }
 
-.preview-phonepe {
+.preview-upi {
   background: #000;
 }
 

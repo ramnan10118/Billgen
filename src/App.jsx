@@ -10,6 +10,7 @@ import RenewalBanner from './components/RenewalBanner';
 import Home from './pages/Home';
 import Settings from './pages/Settings';
 import Generator from './pages/Generator';
+import Terms from './pages/Terms';
 
 import './styles/index.css';
 
@@ -46,6 +47,7 @@ const ProtectedRoute = ({ children }) => {
           subscribedUntil: result.subscribedUntil,
           daysRemaining: result.daysRemaining,
           renewalDue: result.renewalDue,
+          tier3AckAccepted: result.tier3AckAccepted,
         });
       } else if (result.error && !isWithinGracePeriod()) {
         clearAccess();
@@ -92,7 +94,8 @@ function App() {
       
       <Routes>
         <Route path="/" element={<AccessGate />} />
-        
+        <Route path="/terms" element={<Terms />} />
+
         <Route
           path="/home"
           element={

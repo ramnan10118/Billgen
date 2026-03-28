@@ -22,6 +22,7 @@ export const validateEmailAccess = async (email) => {
       subscribedUntil: data.subscribedUntil,
       daysRemaining: data.daysRemaining,
       renewalDue: data.renewalDue,
+      tier3AckAccepted: data.tier3AckAccepted ?? false,
     };
   } catch (error) {
     console.error('Access validation error:', error);

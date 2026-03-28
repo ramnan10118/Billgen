@@ -8,6 +8,25 @@ import './Home.css';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
+const SUBMITTED_STORAGE_KEY = 'ravenlog-submitted';
+const SUBMITTED_STORAGE_LEGACY = 'billgen-submitted';
+
+function readSubmittedSuggestions() {
+  try {
+    const next = localStorage.getItem(SUBMITTED_STORAGE_KEY);
+    if (next) return JSON.parse(next);
+    const legacy = localStorage.getItem(SUBMITTED_STORAGE_LEGACY);
+    if (legacy) {
+      localStorage.setItem(SUBMITTED_STORAGE_KEY, legacy);
+      localStorage.removeItem(SUBMITTED_STORAGE_LEGACY);
+      return JSON.parse(legacy);
+    }
+  } catch {
+    /* ignore */
+  }
+  return [];
+}
+
 const SUGGESTION_OPTIONS = [
   'Electricity Bill',
   'Water Bill',
@@ -34,10 +53,7 @@ const submitSuggestion = async (email, suggestion) => {
 const Home = () => {
   const { email: userEmail, tier } = useAccessStore();
   const templates = getAllTemplates(tier);
-  const [submitted, setSubmitted] = useState(() => {
-    const saved = localStorage.getItem('billgen-submitted');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [submitted, setSubmitted] = useState(() => readSubmittedSuggestions());
   const [selected, setSelected] = useState([]);
   const [customSuggestion, setCustomSuggestion] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -60,7 +76,7 @@ const Home = () => {
 
     const updatedSubmitted = [...new Set([...submitted, ...allSuggestions])];
     setSubmitted(updatedSubmitted);
-    localStorage.setItem('billgen-submitted', JSON.stringify(updatedSubmitted));
+    localStorage.setItem(SUBMITTED_STORAGE_KEY, JSON.stringify(updatedSubmitted));
     setSelected([]);
     setCustomSuggestion('');
     setConfirmMsg('Response registered. Thanks!');

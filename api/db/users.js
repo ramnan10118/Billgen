@@ -11,7 +11,14 @@ const COL = {
   RAZORPAY_SUB_ID: 3,
   SUBSCRIBED_UNTIL: 4,
   CREATED_AT: 5,
+  TIER3_ACK: 6,
 };
+
+function parseTier3Ack(raw) {
+  if (raw === undefined || raw === null || raw === '') return false;
+  const v = String(raw).trim().toUpperCase();
+  return v === 'TRUE' || v === '1' || v === 'YES';
+}
 
 function parseRow(row) {
   if (!row) return null;
@@ -38,13 +45,14 @@ function parseRow(row) {
     daysRemaining: isSubscribed ? daysRemaining : 0,
     renewalDue,
     downloadsLimit: FREE_DOWNLOAD_LIMIT,
+    tier3AckAccepted: parseTier3Ack(row[COL.TIER3_ACK]),
   };
 }
 
 async function getAllRows(sheets) {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${SHEET_NAME}!A:F`,
+    range: `${SHEET_NAME}!A:G`,
   });
   return response.data.values || [];
 }
@@ -77,11 +85,11 @@ export async function createUser(email) {
   const sheets = getSheets();
   const normalized = email.toLowerCase().trim();
   const now = new Date().toISOString();
-  const newRow = [normalized, '0', '1', '', '', now];
+  const newRow = [normalized, '0', '1', '', '', now, 'FALSE'];
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${SHEET_NAME}!A:F`,
+    range: `${SHEET_NAME}!A:G`,
     valueInputOption: 'USER_ENTERED',
     requestBody: { values: [newRow] },
   });
@@ -121,6 +129,12 @@ export async function updateUser(email, fields) {
     updates.push({
       range: `${SHEET_NAME}!E${rowIndex + 1}`,
       values: [[fields.subscribedUntil]],
+    });
+  }
+  if (fields.tier3AckAccepted !== undefined) {
+    updates.push({
+      range: `${SHEET_NAME}!G${rowIndex + 1}`,
+      values: [[fields.tier3AckAccepted ? 'TRUE' : 'FALSE']],
     });
   }
 

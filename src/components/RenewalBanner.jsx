@@ -27,8 +27,8 @@ const RenewalBanner = () => {
       const options = {
         key: keyId,
         subscription_id: subscriptionId,
-        name: 'BillGen',
-        description: 'Unlimited bill generation — ₹149/month',
+        name: 'Ravenlog',
+        description: 'Unlimited document generation — ₹149/month',
         handler: async (response) => {
           try {
             await fetch(`${API_URL}/api/verify-payment`, {

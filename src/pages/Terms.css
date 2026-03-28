@@ -1,0 +1,108 @@
+.terms-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.terms-container {
+  background: linear-gradient(135deg, #1e2029 0%, #111216 100%);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow:
+    inset 1px 1px 0px rgba(255, 255, 255, 0.05),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.3),
+    0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.terms-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.5), transparent);
+  z-index: 1;
+}
+
+.terms-header {
+  padding: var(--space-xl) var(--space-xl) var(--space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.terms-back {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgba(6, 182, 212, 0.75);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-md);
+}
+
+.terms-back:hover {
+  color: #06b6d4;
+}
+
+.terms-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  letter-spacing: 0.06em;
+}
+
+.terms-section {
+  position: relative;
+  padding: var(--space-xl);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.terms-section:last-child {
+  border-bottom: none;
+}
+
+.terms-section::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #06b6d4;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.35);
+}
+
+.terms-section h2 {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(6, 182, 212, 0.85);
+  margin: 0 0 var(--space-md);
+}
+
+.terms-section p {
+  margin: 0 0 var(--space-sm);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.terms-section p:last-child {
+  margin-bottom: 0;
+}
+
+.terms-section ul {
+  margin: var(--space-sm) 0 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.terms-section li {
+  margin-bottom: var(--space-sm);
+}
+
+.terms-section li:last-child {
+  margin-bottom: 0;
+}

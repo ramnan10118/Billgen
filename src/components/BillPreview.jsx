@@ -1,32 +1,83 @@
 import { getTemplate } from '../templates/templateConfig';
 import './BillPreview.css';
 
-const BillPreview = ({ templateId, data }) => {
+/** Third-party marks, bank/UPI strips, and tier-3 GST line — tier 3+ only. */
+const showBrandedAssetsForTier = (tier) => Number(tier) >= 3;
+
+/** User-uploaded logo — placement matches each template’s native logo area. */
+function BusinessLogo({ logoUrl, variant, carrierMarkOffset }) {
+  if (!logoUrl || !variant) return null;
+  const cls = [
+    'bill-business-logo-wrap',
+    `bill-business-logo-wrap--${variant}`,
+    variant === 'broadband' && carrierMarkOffset
+      ? 'bill-business-logo-wrap--broadband-offset'
+      : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+  return (
+    <div className={cls}>
+      <img src={logoUrl} alt="" className="bill-business-logo-img" />
+    </div>
+  );
+}
+
+const BillPreview = ({ templateId, data, tier = 1, logoUrl = null }) => {
   const template = getTemplate(templateId);
-  
+  const showBrandedAssets = showBrandedAssetsForTier(tier);
+
   if (!template) {
     return <div className="bill-preview-error">Template not found</div>;
   }
 
+  const isUpiTemplate = templateId === 'upi';
+  const tierNum = Number(tier);
+  const allowUploadLogo = tierNum < 3;
+  const effectiveLogoUrl =
+    allowUploadLogo && logoUrl && !isUpiTemplate ? logoUrl : null;
+
   const renderTemplate = () => {
     switch (templateId) {
       case 'driver':
-        return <DriverSalaryTemplate data={data} />;
+        return (
+          <DriverSalaryTemplate data={data} showBrandedAssets={showBrandedAssets} />
+        );
+      case 'upi':
+        return (
+          <UpiPaymentTemplate data={data} showBrandedAssets={showBrandedAssets} />
+        );
       case 'playo':
-        return <PlayoBookingTemplate data={data} />;
+        return (
+          <PlayoBookingTemplate
+            data={data}
+            showBrandedAssets={showBrandedAssets}
+            logoUrl={effectiveLogoUrl}
+          />
+        );
       case 'petrol':
-        return <ShellPetrolTemplate data={data} />;
-      case 'airtel':
-        return <AirtelReceiptTemplate data={data} />;
+        return (
+          <ShellPetrolTemplate
+            data={data}
+            showBrandedAssets={showBrandedAssets}
+            logoUrl={effectiveLogoUrl}
+          />
+        );
+      case 'broadband':
+        return (
+          <BroadbandReceiptTemplate
+            data={data}
+            showBrandedAssets={showBrandedAssets}
+            logoUrl={effectiveLogoUrl}
+          />
+        );
       default:
         return <GenericTemplate data={data} template={template} />;
     }
   };
 
-  const isPhonePe = templateId === 'driver' && data.receiptType === 'PhonePe Payment';
-
   return (
-    <div className={`bill-preview ${isPhonePe ? 'bill-preview-phonepe' : ''}`}>
+    <div className={`bill-preview ${isUpiTemplate ? 'bill-preview-upi' : ''}`}>
       {renderTemplate()}
     </div>
   );
@@ -35,12 +86,7 @@ const BillPreview = ({ templateId, data }) => {
 // ============================================
 // DRIVER SALARY RECEIPT
 // ============================================
-const DriverSalaryTemplate = ({ data }) => {
-  // Check if PhonePe variant
-  if (data.receiptType === 'PhonePe Payment') {
-    return <PhonePePaymentTemplate data={data} />;
-  }
-
+const DriverSalaryTemplate = ({ data, showBrandedAssets }) => {
   const formatDateDisplay = (dateStr) => {
     if (!dateStr) return '________';
     // Convert DD/MM/YYYY to "10 Feb 2026" format
@@ -125,9 +171,9 @@ const DriverSalaryTemplate = ({ data }) => {
 };
 
 // ============================================
-// PHONEPE PAYMENT RECEIPT
+// UPI-STYLE PAYMENT RECEIPT (driver template)
 // ============================================
-const PhonePePaymentTemplate = ({ data }) => {
+const UpiPaymentTemplate = ({ data, showBrandedAssets }) => {
   const formatAmount = (amount) => {
     if (!amount) return '0';
     const num = parseFloat(amount);
@@ -135,7 +181,7 @@ const PhonePePaymentTemplate = ({ data }) => {
   };
 
   return (
-    <div className="template-phonepe">
+    <div className="template-upi">
       {/* Green Header */}
       <div className="pp-green-header">
         <span className="pp-back">‹</span>
@@ -214,14 +260,16 @@ const PhonePePaymentTemplate = ({ data }) => {
       {/* Contact Support */}
       <div className="pp-support">
         <div className="pp-support-icon">?</div>
-        <span className="pp-support-text">Contact PhonePe Support</span>
+        <span className="pp-support-text">Contact support</span>
         <span className="pp-support-arrow">›</span>
       </div>
 
-      {/* Powered By */}
-      <div className="pp-powered">
-        <img src="/pp-powered-by.png" alt="Powered by UPI & Yes Bank" className="pp-powered-img" />
-      </div>
+      {/* Powered By — tier 3+ only (UPI / Yes Bank strip) */}
+      {showBrandedAssets && (
+        <div className="pp-powered">
+          <img src="/pp-powered-by.png" alt="Powered by UPI & Yes Bank" className="pp-powered-img" />
+        </div>
+      )}
     </div>
   );
 };
@@ -229,7 +277,7 @@ const PhonePePaymentTemplate = ({ data }) => {
 // ============================================
 // PLAYO SPORTS BOOKING
 // ============================================
-const PlayoBookingTemplate = ({ data }) => {
+const PlayoBookingTemplate = ({ data, showBrandedAssets, logoUrl }) => {
   const calculateTotal = () => {
     const court = parseFloat(data.courtPrice) || 0;
     const fee = parseFloat(data.convenienceFee) || 0;
@@ -263,10 +311,12 @@ const PlayoBookingTemplate = ({ data }) => {
 
   return (
     <div className="template-playo">
-      <div className="playo-logo">
-        <img src="/playo-logo.png" alt="Playo" />
-      </div>
-      
+      <BusinessLogo logoUrl={logoUrl} variant="playo" />
+      {showBrandedAssets && (
+        <div className={`playo-logo${logoUrl ? ' playo-logo--with-business' : ''}`}>
+          <img src="/playo-logo.png" alt="Playo" />
+        </div>
+      )}
       <div className="playo-banner">
         <img src="/playo-banner.png" alt="Booking Confirmed" />
       </div>
@@ -360,7 +410,7 @@ const PlayoBookingTemplate = ({ data }) => {
 // ============================================
 // SHELL PETROL BILL
 // ============================================
-const ShellPetrolTemplate = ({ data }) => {
+const ShellPetrolTemplate = ({ data, showBrandedAssets, logoUrl }) => {
   const formatShellDate = (dateStr) => {
     if (!dateStr) return '________';
     const parts = dateStr.split('/');
@@ -432,10 +482,18 @@ const ShellPetrolTemplate = ({ data }) => {
       </div>
       
       <div className="shell-footer">
-        <div className="shell-logo">
-          <img src="/shell-logo.png" alt="Shell" className="shell-pecten" />
-        </div>
-        <p className="shell-thank-you">Thank you for visiting Shell</p>
+        {logoUrl ? (
+          <BusinessLogo logoUrl={logoUrl} variant="shell" />
+        ) : showBrandedAssets ? (
+          <div className="shell-logo">
+            <img src="/shell-logo.png" alt="Shell" className="shell-pecten" />
+          </div>
+        ) : null}
+        <p className="shell-thank-you">
+          {showBrandedAssets && !logoUrl
+            ? 'Thank you for visiting Shell'
+            : 'Thank you for visiting'}
+        </p>
         <p className="shell-footer-note">For full details please refer to your receipt</p>
       </div>
     </div>
@@ -443,10 +501,10 @@ const ShellPetrolTemplate = ({ data }) => {
 };
 
 // ============================================
-// AIRTEL BROADBAND RECEIPT
+// BROADBAND / TELECOM PAYMENT RECEIPT
 // ============================================
-const AirtelReceiptTemplate = ({ data }) => {
-  const formatAirtelDate = (dateStr) => {
+const BroadbandReceiptTemplate = ({ data, showBrandedAssets, logoUrl }) => {
+  const formatPaymentDate = (dateStr) => {
     if (!dateStr) return '________';
     const parts = dateStr.split('/');
     if (parts.length !== 3) return dateStr;
@@ -454,99 +512,100 @@ const AirtelReceiptTemplate = ({ data }) => {
   };
 
   return (
-    <div className="template-airtel">
-      {/* Paid Watermark */}
-      <div className="airtel-watermark">Paid</div>
-      
-      {/* Logo */}
-      <div className="airtel-logo">
-        <img src="/airtel-logo.png" alt="Airtel" />
+    <div className="template-broadband">
+      <BusinessLogo
+        logoUrl={logoUrl}
+        variant="broadband"
+        carrierMarkOffset={showBrandedAssets}
+      />
+      <div className="bb-watermark">Paid</div>
+
+      {showBrandedAssets && (
+        <div className="bb-carrier-mark">
+          <img src="/telecom-carrier-mark.png" alt="" />
+        </div>
+      )}
+
+      <div className="bb-company">
+        <p className="bb-company-name">Connectivity Services Limited</p>
+        <p className="bb-doc-type">payment receipt</p>
       </div>
-      
-      {/* Company Info */}
-      <div className="airtel-company">
-        <p className="airtel-company-name">Bharti Airtel Limited</p>
-        <p className="airtel-doc-type">payment receipt</p>
+
+      <div className="bb-thankyou">
+        Thank you for choosing our services. Here is your payment receipt.
       </div>
-      
-      {/* Thank you message */}
-      <div className="airtel-thankyou">
-        Thank you for choosing airtel service. Here is the payment receipt.
-      </div>
-      
-      {/* Details Table */}
-      <div className="airtel-table">
-        <div className="airtel-row">
-          <div className="airtel-cell airtel-label">Receipt No.</div>
-          <div className="airtel-cell airtel-value">{data.receiptNo || '________'}</div>
+
+      <div className="bb-table">
+        <div className="bb-row">
+          <div className="bb-cell bb-label">Receipt No.</div>
+          <div className="bb-cell bb-value">{data.receiptNo || '________'}</div>
         </div>
-        <div className="airtel-row">
-          <div className="airtel-cell airtel-label">Customer Name</div>
-          <div className="airtel-cell airtel-value">{data.customerName || '________'}</div>
+        <div className="bb-row">
+          <div className="bb-cell bb-label">Customer Name</div>
+          <div className="bb-cell bb-value">{data.customerName || '________'}</div>
         </div>
-        <div className="airtel-row">
-          <div className="airtel-cell airtel-label">Customer Number</div>
-          <div className="airtel-cell airtel-value">{data.customerNumber || '________'}</div>
+        <div className="bb-row">
+          <div className="bb-cell bb-label">Customer Number</div>
+          <div className="bb-cell bb-value">{data.customerNumber || '________'}</div>
         </div>
-        <div className="airtel-row">
-          <div className="airtel-cell airtel-label">Order Number</div>
-          <div className="airtel-cell airtel-value">{data.orderNumber || '________'}</div>
+        <div className="bb-row">
+          <div className="bb-cell bb-label">Order Number</div>
+          <div className="bb-cell bb-value">{data.orderNumber || '________'}</div>
         </div>
-        <div className="airtel-row">
-          <div className="airtel-cell airtel-label">Line of Business</div>
-          <div className="airtel-cell airtel-value">{data.lineOfBusiness || '________'}</div>
+        <div className="bb-row">
+          <div className="bb-cell bb-label">Line of Business</div>
+          <div className="bb-cell bb-value">{data.lineOfBusiness || '________'}</div>
         </div>
-        <div className="airtel-row">
-          <div className="airtel-cell airtel-label">Payment type</div>
-          <div className="airtel-cell airtel-value">{data.paymentType || '________'}</div>
+        <div className="bb-row">
+          <div className="bb-cell bb-label">Payment type</div>
+          <div className="bb-cell bb-value">{data.paymentType || '________'}</div>
         </div>
-        <div className="airtel-row">
-          <div className="airtel-cell airtel-label">Payment date & time</div>
-          <div className="airtel-cell airtel-value">{formatAirtelDate(data.paymentDate)}  {data.paymentTime || '________'}</div>
+        <div className="bb-row">
+          <div className="bb-cell bb-label">Payment date & time</div>
+          <div className="bb-cell bb-value">
+            {formatPaymentDate(data.paymentDate)} {data.paymentTime || '________'}
+          </div>
         </div>
-        <div className="airtel-row">
-          <div className="airtel-cell airtel-label">Payment mode</div>
-          <div className="airtel-cell airtel-value">{data.paymentMode || '________'}</div>
+        <div className="bb-row">
+          <div className="bb-cell bb-label">Payment mode</div>
+          <div className="bb-cell bb-value">{data.paymentMode || '________'}</div>
         </div>
-        <div className="airtel-row">
-          <div className="airtel-cell airtel-label">Paid amount</div>
-          <div className="airtel-cell airtel-value">₹ {data.paidAmount || '0.00'}</div>
+        <div className="bb-row">
+          <div className="bb-cell bb-label">Paid amount</div>
+          <div className="bb-cell bb-value">₹ {data.paidAmount || '0.00'}</div>
         </div>
-        <div className="airtel-row">
-          <div className="airtel-cell airtel-label">FIXED_LINE {data.fixedLineNumber || '________'}</div>
-          <div className="airtel-cell airtel-value">₹ {data.paidAmount || '0.00'}</div>
+        <div className="bb-row">
+          <div className="bb-cell bb-label">FIXED_LINE {data.fixedLineNumber || '________'}</div>
+          <div className="bb-cell bb-value">₹ {data.paidAmount || '0.00'}</div>
         </div>
       </div>
-      
-      {/* Terms and Conditions */}
-      <div className="airtel-terms-section">
-        <p className="airtel-terms-title">Terms and Conditions</p>
-        <p className="airtel-terms-text">
+
+      <div className="bb-terms-section">
+        <p className="bb-terms-title">Terms and Conditions</p>
+        <p className="bb-terms-text">
           Payment posting to your account is subject to credit settlement by your bank and will get the same posted within next 2-working days (maximum).
         </p>
-        <p className="airtel-terms-text">The above amount is inclusive of applicable Taxes.</p>
-        <p className="airtel-terms-text">All claims subject to exclusive jurisdiction of Delhi courts only.</p>
+        <p className="bb-terms-text">The above amount is inclusive of applicable Taxes.</p>
+        <p className="bb-terms-text">All claims subject to exclusive jurisdiction of Delhi courts only.</p>
       </div>
-      
-      {/* Discrepancy notice */}
-      <div className="airtel-discrepancy">
+
+      <div className="bb-discrepancy">
         If you found any discrepancy, please reach out to us through:
       </div>
-      
-      {/* Airtel Thanks App */}
-      <div className="airtel-app-info">
-        Airtel Thanks App {'>'} Help {'>'} Billing & Payments related issue {'>'} Payments related {'>'} Payment not posted
+
+      <div className="bb-app-info">
+        Customer app {'>'} Help {'>'} Billing & payments {'>'} Payments {'>'} Payment not posted
       </div>
-      
-      {/* System generated notice */}
-      <div className="airtel-notice">
+
+      <div className="bb-notice">
         This is a system-generated receipt and does not require signature. Any unauthorized use, disclosure, dissemination or copying of this receipt is strictly prohibited and may be unlawful.
       </div>
-      
-      {/* Footer */}
-      <div className="airtel-footer">
-        <p>Regd. Office: Bharti Airtel Ltd, Plot No. 16, Udyog Vihar Phase - IV, Gurgaon, Haryana. 122 015</p>
-        <p>GSTN: 06AAACB2894G1ZR | PAN: AAACB2894G</p>
+
+      <div className="bb-footer">
+        <p>Regd. Office: As per records on your service account.</p>
+        {showBrandedAssets && (
+          <p>GSTIN / PAN: As shown on your tax records where applicable.</p>
+        )}
       </div>
     </div>
   );

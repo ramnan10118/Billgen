@@ -2,15 +2,15 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useProfileStore, useTemplateDefaultsStore, useUIStore } from '../context/store';
-import { getTemplate, isTierAllowed } from '../templates/templateConfig';
+import { getTemplate } from '../templates/templateConfig';
 import { 
   getDatePresets, 
   generateBillNumber, 
   generateAccountNumber, 
   generatePlayoId,
   generateShellTxnId,
-  generateAirtelReceiptNo,
-  generateAirtelOrderNo,
+  generateBroadbandReceiptNo,
+  generateBroadbandOrderNo,
   generatePhonePeTxnId,
   generateUtrNumber,
   formatDate 
@@ -22,7 +22,18 @@ import Layout from '../components/Layout';
 import BillPreview from '../components/BillPreview';
 import DatePicker from '../components/DatePicker';
 import PaywallModal from '../components/PaywallModal';
+import AcknowledgmentModal from '../components/AcknowledgmentModal';
+import LogoUpload from '../components/LogoUpload';
 import './Generator.css';
+
+const LOGO_DIMENSION_HINTS = {
+  playo:
+    'Top-left slot is up to ~220×72 px (below the banner). Use @2× assets for sharp export; crop tight so the mark fills the frame.',
+  petrol:
+    'Footer mark matches the receipt logo size: up to ~240×73 px. Crop tight to your symbol—square files with lots of empty border will look small when scaled to fit.',
+  broadband:
+    'Top-right slot is up to ~200×78 px (same scale as the carrier mark). Crop tight; wide or square padding shrinks the visible logo.',
+};
 
 const Generator = () => {
   const { templateId } = useParams();
@@ -33,10 +44,22 @@ const Generator = () => {
   const { profile } = useProfileStore();
   const { getDefaults, saveDefaults } = useTemplateDefaultsStore();
   const { isExporting, setExporting } = useUIStore();
-  const { email: userEmail, tier, needsSubscription, updateDownloads, updateSubscription } = useAccessStore();
+  const {
+    email: userEmail,
+    tier,
+    tier3AckAccepted,
+    needsSubscription,
+    updateDownloads,
+    updateSubscription,
+    updateTier3Ack,
+  } = useAccessStore();
   
   const [formData, setFormData] = useState({});
+  const [logoUrl, setLogoUrl] = useState(null);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [showAck, setShowAck] = useState(false);
+  const [pendingFormat, setPendingFormat] = useState(null);
+  const ackBypassed = useRef(false);
   const datePresets = getDatePresets();
 
   const autoGenerators = {
@@ -44,8 +67,8 @@ const Generator = () => {
     accountNumber: generateAccountNumber,
     playoId: generatePlayoId,
     shellTxnId: generateShellTxnId,
-    airtelReceiptNo: generateAirtelReceiptNo,
-    airtelOrderNo: generateAirtelOrderNo,
+    broadbandReceiptNo: generateBroadbandReceiptNo,
+    broadbandOrderNo: generateBroadbandOrderNo,
     phonePeTxnId: generatePhonePeTxnId,
     utrNumber: generateUtrNumber,
   };
@@ -54,7 +77,8 @@ const Generator = () => {
   useEffect(() => {
     if (!template) return;
     
-    const savedDefaults = getDefaults(templateId);
+    const rawDefaults = getDefaults(templateId);
+    const savedDefaults = { ...rawDefaults };
     const initialData = {};
     
     template.fields.forEach(field => {
@@ -71,10 +95,10 @@ const Generator = () => {
         initialData[field.id] = generatePlayoId();
       } else if (field.autoGenerate === 'shellTxnId') {
         initialData[field.id] = generateShellTxnId();
-      } else if (field.autoGenerate === 'airtelReceiptNo') {
-        initialData[field.id] = generateAirtelReceiptNo();
-      } else if (field.autoGenerate === 'airtelOrderNo') {
-        initialData[field.id] = generateAirtelOrderNo();
+      } else if (field.autoGenerate === 'broadbandReceiptNo') {
+        initialData[field.id] = generateBroadbandReceiptNo();
+      } else if (field.autoGenerate === 'broadbandOrderNo') {
+        initialData[field.id] = generateBroadbandOrderNo();
       } else if (field.autoGenerate === 'phonePeTxnId') {
         initialData[field.id] = generatePhonePeTxnId();
       } else if (field.autoGenerate === 'utrNumber') {
@@ -95,12 +119,32 @@ const Generator = () => {
     setFormData(initialData);
   }, [templateId, template, profile]);
 
-  if (!template || !isTierAllowed(templateId, tier)) {
+  useEffect(() => {
+    setLogoUrl(null);
+  }, [templateId]);
+
+  useEffect(() => {
+    if (Number(tier) >= 3) setLogoUrl(null);
+  }, [tier]);
+
+  if (!template) {
     return (
       <Layout>
         <div className="generator-not-found">
           <h2>Template not found</h2>
-          <p>The template "{templateId}" doesn't exist or is not available for your account.</p>
+          <p>The template &quot;{templateId}&quot; does not exist.</p>
+          <Link to="/home" className="btn btn-primary">Back to Templates</Link>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (template.minimumTier && Number(tier) < template.minimumTier) {
+    return (
+      <Layout>
+        <div className="generator-not-found">
+          <h2>Not available</h2>
+          <p>This template is only available for Tier 3 accounts.</p>
           <Link to="/home" className="btn btn-primary">Back to Templates</Link>
         </div>
       </Layout>
@@ -127,6 +171,14 @@ const Generator = () => {
   const handleExport = async (format) => {
     if (!previewRef.current || isExporting) return;
 
+    if (ackBypassed.current) {
+      ackBypassed.current = false;
+    } else if (!tier3AckAccepted) {
+      setPendingFormat(format);
+      setShowAck(true);
+      return;
+    }
+
     if (needsSubscription()) {
       setShowPaywall(true);
       return;
@@ -135,10 +187,11 @@ const Generator = () => {
     saveDefaults(templateId, formData);
     
     const templateClass = {
-      driver: formData.receiptType === 'PhonePe Payment' ? '.template-phonepe' : '.template-driver',
+      driver: '.template-driver',
+      upi: '.template-upi',
       playo: '.template-playo',
       petrol: '.template-shell',
-      airtel: '.template-airtel',
+      broadband: '.template-broadband',
     }[templateId];
     
     const exportElement = (templateClass && previewRef.current.querySelector(templateClass)) || previewRef.current;
@@ -156,6 +209,15 @@ const Generator = () => {
     } finally {
       setExporting(false);
     }
+  };
+
+  const handleAckConfirm = (sheetOk) => {
+    ackBypassed.current = true;
+    setShowAck(false);
+    if (sheetOk) updateTier3Ack(true);
+    const fmt = pendingFormat;
+    setPendingFormat(null);
+    if (fmt) handleExport(fmt);
   };
 
   const handleSubscribed = () => {
@@ -262,25 +324,6 @@ const Generator = () => {
         );
         
       case 'select':
-        // Special tab rendering for receiptType field
-        if (field.id === 'receiptType') {
-          return (
-            <div className="tab-selector">
-              {field.options?.map(opt => (
-                <button
-                  key={opt}
-                  type="button"
-                  className={`tab-btn ${value === opt ? 'active' : ''}`}
-                  onClick={() => handleChange(field.id, opt)}
-                >
-                  {opt === 'Salary Receipt' && '📄'}
-                  {opt === 'PhonePe Payment' && '📱'}
-                  {' '}{opt}
-                </button>
-              ))}
-            </div>
-          );
-        }
         return (
           <select
             id={field.id}
@@ -376,16 +419,25 @@ const Generator = () => {
               <form className="generator-form">
                 {template.fields.map(field => (
                   shouldShowField(field) && (
-                    <div key={field.id} className={`form-group ${field.id === 'receiptType' ? 'tab-group' : ''}`}>
-                      {field.id !== 'receiptType' && (
-                        <label htmlFor={field.id}>{field.label}</label>
-                      )}
+                    <div key={field.id} className="form-group">
+                      <label htmlFor={field.id}>{field.label}</label>
                       {renderField(field)}
                     </div>
                   )
                 ))}
               </form>
             </div>
+
+            {templateId !== 'driver' && templateId !== 'upi' && Number(tier) < 3 && (
+              <div className="logo-section">
+                <h3>Business logo</h3>
+                <LogoUpload
+                  value={logoUrl}
+                  onChange={setLogoUrl}
+                  dimensionHint={LOGO_DIMENSION_HINTS[templateId]}
+                />
+              </div>
+            )}
             
             <div className="export-section">
               <h3>Export</h3>
@@ -425,11 +477,19 @@ const Generator = () => {
               <h3>Live Preview</h3>
               <span className="preview-hint">Updates as you type</span>
             </div>
-            <div className={`preview-container ${templateId === 'driver' && formData.receiptType === 'PhonePe Payment' ? 'preview-phonepe' : ''}`}>
-              <div className={`preview-wrapper ${templateId === 'driver' && formData.receiptType === 'PhonePe Payment' ? 'preview-wrapper-phonepe' : ''}`} ref={previewRef}>
+            <div className={`preview-container ${templateId === 'upi' ? 'preview-upi' : ''}`}>
+              <div className={`preview-wrapper ${templateId === 'upi' ? 'preview-wrapper-upi' : ''}`} ref={previewRef}>
                 <BillPreview 
                   templateId={templateId}
                   data={formData}
+                  tier={tier}
+                  logoUrl={
+                    templateId === 'driver' ||
+                    templateId === 'upi' ||
+                    Number(tier) >= 3
+                      ? null
+                      : logoUrl
+                  }
                 />
               </div>
             </div>
@@ -441,6 +501,17 @@ const Generator = () => {
         isOpen={showPaywall}
         onClose={() => setShowPaywall(false)}
         onSubscribed={handleSubscribed}
+      />
+
+      <AcknowledgmentModal
+        isOpen={showAck}
+        email={userEmail}
+        templateId={templateId}
+        onConfirm={handleAckConfirm}
+        onClose={() => {
+          setShowAck(false);
+          setPendingFormat(null);
+        }}
       />
     </Layout>
   );

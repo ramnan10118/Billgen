@@ -28,8 +28,8 @@ const PaywallModal = ({ isOpen, onClose, onSubscribed }) => {
       const options = {
         key: keyId,
         subscription_id: subscriptionId,
-        name: 'BillGen',
-        description: 'Unlimited bill generation — ₹149/month',
+        name: 'Ravenlog',
+        description: 'Unlimited document generation — ₹149/month',
         handler: async (response) => {
           try {
             const verifyRes = await fetch(`${API_URL}/api/verify-payment`, {
@@ -114,7 +114,7 @@ const PaywallModal = ({ isOpen, onClose, onSubscribed }) => {
                 <span className="paywall-amount">149</span>
                 <span className="paywall-period">/month</span>
               </div>
-              <p className="paywall-offer-desc">Unlimited bill generation</p>
+              <p className="paywall-offer-desc">Unlimited document generation</p>
             </div>
 
             {error && (

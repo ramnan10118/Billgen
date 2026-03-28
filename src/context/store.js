@@ -1,5 +1,23 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+
+function storageWithLegacy(legacyKey) {
+  return createJSONStorage(() => ({
+    getItem: (name) => {
+      let s = localStorage.getItem(name);
+      if (!s) {
+        s = localStorage.getItem(legacyKey);
+        if (s) {
+          localStorage.setItem(name, s);
+          localStorage.removeItem(legacyKey);
+        }
+      }
+      return s;
+    },
+    setItem: (name, value) => localStorage.setItem(name, value),
+    removeItem: (name) => localStorage.removeItem(name),
+  }));
+}
 
 // Profile store - persisted to localStorage
 export const useProfileStore = create(
@@ -34,7 +52,8 @@ export const useProfileStore = create(
         }),
     }),
     {
-      name: 'billgen-profile',
+      name: 'ravenlog-profile',
+      storage: storageWithLegacy('billgen-profile'),
     }
   )
 );
@@ -55,20 +74,32 @@ export const useAccessStore = create(
       subscribedUntil: null,
       daysRemaining: null,
       renewalDue: false,
+      tier3AckAccepted: false,
 
       setAccess: (email, extra = {}) =>
-        set({
-          email,
-          isValidated: true,
-          lastValidated: Date.now(),
-          tier: extra.tier ?? 1,
-          downloadsUsed: extra.downloadsUsed ?? 0,
-          downloadsLimit: extra.downloadsLimit ?? 3,
-          isSubscribed: extra.isSubscribed ?? false,
-          subscribedUntil: extra.subscribedUntil ?? null,
-          daysRemaining: extra.daysRemaining ?? null,
-          renewalDue: extra.renewalDue ?? false,
+        set((state) => {
+          const sameSession = state.email === email;
+          return {
+            email,
+            isValidated: true,
+            lastValidated: Date.now(),
+            tier: extra.tier ?? 1,
+            downloadsUsed: extra.downloadsUsed ?? 0,
+            downloadsLimit: extra.downloadsLimit ?? 3,
+            isSubscribed: extra.isSubscribed ?? false,
+            subscribedUntil: extra.subscribedUntil ?? null,
+            daysRemaining: extra.daysRemaining ?? null,
+            renewalDue: extra.renewalDue ?? false,
+            tier3AckAccepted:
+              extra.tier3AckAccepted !== undefined
+                ? !!extra.tier3AckAccepted
+                : sameSession
+                  ? state.tier3AckAccepted
+                  : false,
+          };
         }),
+
+      updateTier3Ack: (accepted) => set({ tier3AckAccepted: !!accepted }),
 
       updateDownloads: (downloadsUsed, requiresSubscription) =>
         set({ downloadsUsed, ...(requiresSubscription !== undefined ? { isSubscribed: !requiresSubscription } : {}) }),
@@ -93,6 +124,7 @@ export const useAccessStore = create(
           subscribedUntil: null,
           daysRemaining: null,
           renewalDue: false,
+          tier3AckAccepted: false,
         }),
 
       isWithinGracePeriod: () => {
@@ -108,7 +140,8 @@ export const useAccessStore = create(
       },
     }),
     {
-      name: 'billgen-access',
+      name: 'ravenlog-access',
+      storage: storageWithLegacy('billgen-access'),
     }
   )
 );
@@ -140,7 +173,8 @@ export const useTemplateDefaultsStore = create(
         }),
     }),
     {
-      name: 'billgen-defaults',
+      name: 'ravenlog-defaults',
+      storage: storageWithLegacy('billgen-defaults'),
     }
   )
 );

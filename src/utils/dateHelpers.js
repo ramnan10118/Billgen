@@ -117,8 +117,8 @@ export const generateShellTxnId = () => {
   return `${part1}_${part2}_${part3}_${part4}`;
 };
 
-// Generate Airtel receipt number (18 digits)
-export const generateAirtelReceiptNo = () => {
+// Generate broadband-style receipt number (18 digits)
+export const generateBroadbandReceiptNo = () => {
   let result = '73';
   for (let i = 0; i < 16; i++) {
     result += Math.floor(Math.random() * 10);
@@ -126,8 +126,8 @@ export const generateAirtelReceiptNo = () => {
   return result;
 };
 
-// Generate Airtel order number (18 digits)
-export const generateAirtelOrderNo = () => {
+// Generate broadband-style order number (18 digits)
+export const generateBroadbandOrderNo = () => {
   let result = '73';
   for (let i = 0; i < 16; i++) {
     result += Math.floor(Math.random() * 10);
@@ -135,7 +135,7 @@ export const generateAirtelOrderNo = () => {
   return result;
 };
 
-// Generate PhonePe transaction ID (12 digits)
+// Generate UPI-style app transaction ID (12 digits)
 export const generatePhonePeTxnId = () => {
   let result = '';
   for (let i = 0; i < 12; i++) {

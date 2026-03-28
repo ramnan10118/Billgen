@@ -52,7 +52,7 @@ const Settings = () => {
             >
               <span className="onboarding-icon">👋</span>
               <div>
-                <strong>Welcome to BillGen!</strong>
+                <strong>Welcome to Ravenlog!</strong>
                 <p>Fill in your profile once, and we'll auto-fill your bills every time.</p>
               </div>
             </motion.div>

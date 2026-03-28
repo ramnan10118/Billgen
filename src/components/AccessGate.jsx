@@ -36,6 +36,7 @@ const AccessGate = () => {
           subscribedUntil: result.subscribedUntil,
           daysRemaining: result.daysRemaining,
           renewalDue: result.renewalDue,
+          tier3AckAccepted: result.tier3AckAccepted,
         });
         navigate('/home');
       } else if (result.error) {
@@ -71,7 +72,7 @@ const AccessGate = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.4 }}
           >
-            Bill<span className="access-title-accent">Gen</span>
+            Raven<span className="access-title-accent">log</span>
           </motion.h1>
           <motion.span 
             className="access-version"
