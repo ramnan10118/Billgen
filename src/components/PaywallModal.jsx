@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { X } from '@phosphor-icons/react';
 import { useAccessStore } from '../context/store';
 import { loadRazorpay } from '../utils/razorpay';
 import './PaywallModal.css';
@@ -91,7 +92,9 @@ const PaywallModal = ({ isOpen, onClose, onSubscribed }) => {
             transition={{ duration: 0.25 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <button className="paywall-close" onClick={onClose}>✕</button>
+            <button type="button" className="paywall-close" onClick={onClose} aria-label="Close">
+              <X size={22} weight="bold" />
+            </button>
 
             <div className="paywall-icon">
               <span>⚡</span>

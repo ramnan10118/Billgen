@@ -263,7 +263,7 @@
 }
 
 .chip-check {
-  font-size: 0.75rem;
+  flex-shrink: 0;
   color: #06b6d4;
 }
 

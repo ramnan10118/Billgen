@@ -88,9 +88,9 @@
   transform: rotate(45deg);
 }
 
-.sub-expired-icon span {
-  font-size: 1.75rem;
+.sub-expired-icon svg {
   transform: rotate(-45deg);
+  color: #ec4899;
   filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.5));
 }
 

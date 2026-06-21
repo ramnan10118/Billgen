@@ -50,8 +50,12 @@
 }
 
 .onboarding-icon {
-  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  color: #06b6d4;
+  filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.35));
 }
 
 .onboarding-banner strong {
@@ -142,10 +146,16 @@
   border-top: 1px solid var(--border-color);
 }
 
+.form-actions .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .check-icon {
+  flex-shrink: 0;
   color: var(--accent-success);
-  font-weight: bold;
-  text-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.45));
 }
 
 /* Note */

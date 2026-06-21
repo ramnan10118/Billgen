@@ -63,9 +63,9 @@ export const useAccessStore = create(
   persist(
     (set, get) => ({
       email: null,
+      googleId: null,
       isValidated: false,
       lastValidated: null,
-      gracePeriodHours: 24,
 
       tier: 1,
       downloadsUsed: 0,
@@ -78,9 +78,10 @@ export const useAccessStore = create(
 
       setAccess: (email, extra = {}) =>
         set((state) => {
-          const sameSession = state.email === email;
+          const sameSession = state.email === email && state.googleId === (extra.googleId ?? state.googleId);
           return {
             email,
+            googleId: extra.googleId ?? null,
             isValidated: true,
             lastValidated: Date.now(),
             tier: extra.tier ?? 1,
@@ -115,6 +116,7 @@ export const useAccessStore = create(
       clearAccess: () =>
         set({
           email: null,
+          googleId: null,
           isValidated: false,
           lastValidated: null,
           tier: 1,
@@ -126,13 +128,6 @@ export const useAccessStore = create(
           renewalDue: false,
           tier3AckAccepted: false,
         }),
-
-      isWithinGracePeriod: () => {
-        const { lastValidated, gracePeriodHours } = get();
-        if (!lastValidated) return false;
-        const hoursSinceValidation = (Date.now() - lastValidated) / (1000 * 60 * 60);
-        return hoursSinceValidation < gracePeriodHours;
-      },
 
       needsSubscription: () => {
         const { downloadsUsed, downloadsLimit, isSubscribed } = get();

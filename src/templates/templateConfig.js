@@ -4,7 +4,6 @@ export const TEMPLATES = {
   driver: {
     id: 'driver',
     name: 'Driver Salary Receipt',
-    icon: '🚗',
     description: 'Driver salary declaration & receipt',
     color: '#374151',
     fields: [
@@ -22,7 +21,6 @@ export const TEMPLATES = {
   upi: {
     id: 'upi',
     name: 'UPI Payment Receipt',
-    icon: '📱',
     description: 'UPI-style payment confirmation',
     color: '#2E7D32',
     minimumTier: 3,
@@ -41,7 +39,6 @@ export const TEMPLATES = {
   playo: {
     id: 'playo',
     name: 'Sports Bill',
-    icon: '⚽',
     description: 'Booking confirmation',
     color: '#10B981',
     fields: [
@@ -65,7 +62,6 @@ export const TEMPLATES = {
   petrol: {
     id: 'petrol',
     name: 'Petrol Bill',
-    icon: '⛽',
     description: 'Fuel station receipt',
     color: '#FBBF24',
     fields: [
@@ -74,12 +70,19 @@ export const TEMPLATES = {
       { id: 'location', label: 'Location', type: 'text', default: 'HSR LAYOUT' },
       { id: 'transactionId', label: 'Transaction ID', type: 'text', autoGenerate: 'shellTxnId' },
       { id: 'fuelCode', label: 'Fuel Code', type: 'text', default: '02' },
-      { id: 'fuelType', label: 'Fuel Type', type: 'select', options: ['V-PowerUNL', 'FuelSave UNL', 'FuelSave Diesel', 'V-Power Diesel'] },
+      {
+        id: 'fuelType',
+        label: 'Fuel Type',
+        type: 'select',
+        default: 'Petrol',
+        options: ['Petrol', 'Diesel', 'Gas'],
+        tierOptions: { 3: ['V-Power UNL', 'V-Power Diesel', 'V-Power Nitro+', 'FuelSave UNL', 'FuelSave Diesel', 'Petrol', 'Diesel', 'Gas'] },
+      },
       { id: 'quantity', label: 'Quantity (Litres)', type: 'number', default: '42' },
       { id: 'ratePerLitre', label: 'Rate per Litre (₹)', type: 'currency', default: '129.39' },
-      { id: 'discount', label: 'Discount (₹)', type: 'currency', default: '150' },
-      { id: 'discountText', label: 'Discount Description', type: 'text', default: 'Get ₹150/- off on fueling petrol above ₹5000' },
-      { id: 'totalAmount', label: 'Total Amount (₹)', type: 'currency' },
+      { id: 'showDiscount', label: 'Apply Discount', type: 'toggle', default: false },
+      { id: 'discount', label: 'Discount (₹)', type: 'currency', default: '150', showWhen: { field: 'showDiscount', value: true } },
+      { id: 'discountText', label: 'Discount Description', type: 'text', default: 'Get ₹150/- off on fueling petrol above ₹5000', showWhen: { field: 'showDiscount', value: true } },
       { id: 'pointsEarned', label: 'Points Earned', type: 'number', default: '215' },
       { id: 'bonusPoints', label: 'Bonus Points', type: 'number', default: '860' },
     ],
@@ -88,7 +91,6 @@ export const TEMPLATES = {
   broadband: {
     id: 'broadband',
     name: 'Broadband Receipt',
-    icon: '🌐',
     description: 'Payment receipt',
     color: '#E50914',
     fields: [

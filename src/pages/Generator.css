@@ -27,12 +27,18 @@
 .back-link {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   font-size: 0.8125rem;
   color: var(--text-muted);
   margin-bottom: var(--space-md);
   transition: color var(--transition-fast);
   font-family: var(--font-mono);
   letter-spacing: 0.05em;
+}
+
+.back-link-icon {
+  flex-shrink: 0;
+  color: currentColor;
 }
 
 .back-link:hover {
@@ -178,6 +184,7 @@
   padding: 0;
   border-radius: 2px;
   transition: all var(--transition-fast);
+  color: var(--text-muted);
 }
 
 .randomize-btn:hover {
@@ -275,7 +282,14 @@
 
 .export-btn {
   width: 100%;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  gap: 0.5rem;
+}
+
+.export-btn-icon {
+  flex-shrink: 0;
 }
 
 /* Preview Panel */

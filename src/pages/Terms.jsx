@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
+import { ArrowLeft } from '@phosphor-icons/react';
 import Layout from '../components/Layout';
 import './Terms.css';
 
@@ -13,7 +14,8 @@ const Terms = () => (
       >
         <div className="terms-header">
           <Link to="/" className="terms-back">
-            ← Back
+            <ArrowLeft size={18} weight="bold" className="terms-back-icon" aria-hidden />
+            Back
           </Link>
           <h1>Terms of Service</h1>
         </div>

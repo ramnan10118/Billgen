@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
+import { Timer } from '@phosphor-icons/react';
 import { useAccessStore } from '../context/store';
 import { loadRazorpay } from '../utils/razorpay';
 import './SubscriptionExpired.css';
@@ -92,7 +93,7 @@ const SubscriptionExpired = () => {
         transition={{ duration: 0.4 }}
       >
         <div className="sub-expired-icon">
-          <span>⏱</span>
+          <Timer size={40} weight="duotone" />
         </div>
 
         <h1 className="sub-expired-title" data-text="SUBSCRIPTION EXPIRED">

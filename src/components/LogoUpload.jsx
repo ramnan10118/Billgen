@@ -1,15 +1,17 @@
 import { useCallback, useRef, useState } from 'react';
+import { X, UploadSimple, Ruler, FilePng, FilePdf } from '@phosphor-icons/react';
+import { isPdfLogoDataUrl } from '../utils/logoHelpers';
 import './LogoUpload.css';
 
 const MAX_BYTES = 2 * 1024 * 1024;
 
-const MIME_ALLOW = new Set(['image/png', 'image/jpeg', 'image/svg+xml']);
+const MIME_ALLOW = new Set(['image/png', 'application/pdf']);
 
-function isAllowedImage(file) {
+function isAllowedLogoFile(file) {
   const t = (file.type || '').toLowerCase().trim();
   if (MIME_ALLOW.has(t)) return true;
   const n = file.name.toLowerCase();
-  return /\.(png|jpe?g|svg)$/.test(n);
+  return /\.(png|pdf)$/.test(n);
 }
 
 function readFileAsDataUrl(file) {
@@ -37,8 +39,8 @@ export default function LogoUpload({ value, onChange, dimensionHint }) {
         setError('File too large. Max 2MB.');
         return;
       }
-      if (!isAllowedImage(file)) {
-        setError('Please upload PNG, JPG or SVG');
+      if (!isAllowedLogoFile(file)) {
+        setError('Please upload PNG or PDF');
         return;
       }
 
@@ -88,7 +90,14 @@ export default function LogoUpload({ value, onChange, dimensionHint }) {
     <div className="logo-upload">
       <span className="logo-upload-label">Business Logo (optional)</span>
       <p className="logo-upload-hint">Add your own logo to this document</p>
-      {dimensionHint ? <p className="logo-upload-dimensions">{dimensionHint}</p> : null}
+      {dimensionHint ? (
+        <p className="logo-upload-dimensions">
+          <Ruler size={18} weight="duotone" className="logo-upload-dimensions-icon" aria-hidden />
+          <span>
+            <strong>Dimensions</strong> · {dimensionHint}
+          </span>
+        </p>
+      ) : null}
 
       {!value ? (
         <div
@@ -109,26 +118,47 @@ export default function LogoUpload({ value, onChange, dimensionHint }) {
           <input
             ref={inputRef}
             type="file"
-            accept=".png,.jpg,.jpeg,.svg,image/png,image/jpeg,image/svg+xml"
+            accept=".png,.pdf,image/png,application/pdf"
             onChange={handleInputChange}
             aria-label="Upload business logo"
           />
           <span className="logo-upload-icon" aria-hidden>
-            ↑
+            <UploadSimple size={28} weight="duotone" />
           </span>
           <span className="logo-upload-cta">Click to browse or drag and drop</span>
-          <span className="logo-upload-formats">PNG, JPG or SVG · max 2MB</span>
+          <span className="logo-upload-formats">
+            <FilePng size={18} weight="duotone" className="logo-upload-format-icon" aria-hidden />
+            PNG
+            <span className="logo-upload-formats-sep" aria-hidden>
+              ·
+            </span>
+            <FilePdf size={18} weight="duotone" className="logo-upload-format-icon" aria-hidden />
+            PDF
+            <span className="logo-upload-formats-sep" aria-hidden>
+              ·
+            </span>
+            max 2MB
+          </span>
         </div>
       ) : (
         <div className="logo-upload-preview-wrap">
-          <img src={value} alt="" className="logo-upload-preview-img" />
+          {isPdfLogoDataUrl(value) ? (
+            <object
+              data={value}
+              type="application/pdf"
+              className="logo-upload-preview-pdf"
+              aria-label="Logo PDF preview"
+            />
+          ) : (
+            <img src={value} alt="" className="logo-upload-preview-img" />
+          )}
           <button
             type="button"
             className="logo-upload-remove"
             onClick={handleRemove}
             aria-label="Remove logo"
           >
-            ✕
+            <X size={18} weight="bold" />
           </button>
         </div>
       )}

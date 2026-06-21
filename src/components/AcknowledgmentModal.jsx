@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { X, Check } from '@phosphor-icons/react';
 import './AcknowledgmentModal.css';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -78,7 +79,7 @@ const AcknowledgmentModal = ({ isOpen, email, templateId, onConfirm, onClose }) 
               disabled={submitting}
               aria-label="Close"
             >
-              ✕
+              <X size={20} weight="bold" />
             </button>
             <h2 id="ack-dialog-title" className="ack-title">
               BEFORE YOU DOWNLOAD
@@ -107,7 +108,7 @@ const AcknowledgmentModal = ({ isOpen, email, templateId, onConfirm, onClose }) 
                 disabled={submitting}
               />
               <span className="ack-consent-box" aria-hidden="true">
-                {checked && <span className="ack-consent-check">✓</span>}
+                {checked && <Check className="ack-consent-check" size={14} weight="bold" aria-hidden />}
               </span>
               <span className="ack-consent-label">
                 I have read and understand the above.

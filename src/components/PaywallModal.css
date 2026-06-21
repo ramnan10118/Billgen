@@ -41,11 +41,13 @@
   background: transparent;
   border: none;
   color: var(--text-muted);
-  font-size: 0.9rem;
   cursor: pointer;
   padding: 4px 8px;
   transition: color 0.2s;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .paywall-close:hover {

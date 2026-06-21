@@ -1,4 +1,7 @@
+import { Check } from '@phosphor-icons/react';
+import { isPdfLogoDataUrl } from '../utils/logoHelpers';
 import { getTemplate } from '../templates/templateConfig';
+import TemplateIcon from './TemplateIcon';
 import './BillPreview.css';
 
 /** Third-party marks, bank/UPI strips, and tier-3 GST line — tier 3+ only. */
@@ -18,7 +21,16 @@ function BusinessLogo({ logoUrl, variant, carrierMarkOffset }) {
     .join(' ');
   return (
     <div className={cls}>
-      <img src={logoUrl} alt="" className="bill-business-logo-img" />
+      {isPdfLogoDataUrl(logoUrl) ? (
+        <object
+          data={logoUrl}
+          type="application/pdf"
+          className="bill-business-logo-img bill-business-logo-pdf"
+          aria-label=""
+        />
+      ) : (
+        <img src={logoUrl} alt="" className="bill-business-logo-img" />
+      )}
     </div>
   );
 }
@@ -156,9 +168,11 @@ const DriverSalaryTemplate = ({ data, showBrandedAssets }) => {
       </div>
       
       <div className="driver-stamp-section">
-        <div className="driver-stamp">
-          <img src="/revenue-stamp.png" alt="Revenue Stamp" className="revenue-stamp-img" />
-        </div>
+        {showBrandedAssets && (
+          <div className="driver-stamp">
+            <img src="/revenue-stamp.png" alt="Revenue Stamp" className="revenue-stamp-img" />
+          </div>
+        )}
         {data.showSignature !== false && (
           <div className="driver-signature">
             <div className="signature-line"></div>
@@ -208,7 +222,7 @@ const UpiPaymentTemplate = ({ data, showBrandedAssets }) => {
       <div className="pp-banking-row">
         <span className="pp-banking-label">Banking Name :</span>
         <span className="pp-banking-value">{data.driverName || 'Sabarish A'}</span>
-        <span className="pp-banking-check">✓</span>
+        <Check className="pp-banking-check" size={16} weight="bold" aria-hidden />
       </div>
 
       {/* Payment Details */}
@@ -426,14 +440,14 @@ const ShellPetrolTemplate = ({ data, showBrandedAssets, logoUrl }) => {
 
   const calculateTotal = () => {
     const subtotal = parseFloat(calculateSubtotal()) || 0;
-    const discount = parseFloat(data.discount) || 0;
+    const discount = data.showDiscount ? (parseFloat(data.discount) || 0) : 0;
     return (subtotal - discount).toFixed(2);
   };
 
   return (
     <div className="template-shell">
       <div className="shell-transaction-header">
-        <h2>Transaction details</h2>
+        <h2 className={showBrandedAssets ? '' : 'shell-transaction-header--unbranded'}>Transaction details</h2>
       </div>
       
       <div className="shell-transaction-info">
@@ -455,7 +469,7 @@ const ShellPetrolTemplate = ({ data, showBrandedAssets, logoUrl }) => {
           <span className="shell-item-amount">INR {calculateSubtotal()}</span>
         </div>
         
-        {data.discount && parseFloat(data.discount) > 0 && (
+        {data.showDiscount && parseFloat(data.discount) > 0 && (
           <div className="shell-discount-row">
             <span className="shell-discount-text">{data.discountText || 'Discount'}</span>
             <span className="shell-discount-amount">- INR {parseFloat(data.discount).toFixed(2)}</span>
@@ -465,7 +479,7 @@ const ShellPetrolTemplate = ({ data, showBrandedAssets, logoUrl }) => {
       
       <div className="shell-total">
         <span className="shell-total-label">Total Paid</span>
-        <span className="shell-total-amount">INR {data.totalAmount || calculateTotal()}</span>
+        <span className="shell-total-amount">INR {calculateTotal()}</span>
       </div>
       
       <div className="shell-points">
@@ -617,7 +631,9 @@ const BroadbandReceiptTemplate = ({ data, showBrandedAssets, logoUrl }) => {
 const GenericTemplate = ({ data, template }) => (
   <div className="template-generic">
     <div className="generic-header">
-      <span className="icon">{template.icon}</span>
+      <span className="icon">
+        <TemplateIcon templateId={template.id} size={28} weight="duotone" />
+      </span>
       <h2>{template.name}</h2>
     </div>
     <div className="generic-body">

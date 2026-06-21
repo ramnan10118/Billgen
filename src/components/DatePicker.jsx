@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { CalendarBlank } from '@phosphor-icons/react';
 import './DatePicker.css';
 
 const MONTHS = [
@@ -103,7 +104,7 @@ const DatePicker = ({ value, onChange, placeholder = 'DD/MM/YYYY' }) => {
           onClick={() => setOpen(!open)}
           title="Open calendar"
         >
-          📅
+          <CalendarBlank size={20} weight="duotone" />
         </button>
       </div>
       {open && (

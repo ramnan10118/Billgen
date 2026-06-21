@@ -184,6 +184,85 @@
   gap: var(--space-lg);
 }
 
+.access-google-block {
+  align-items: stretch;
+}
+
+.access-config-missing {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #f97316;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.access-google-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  min-height: 40px;
+}
+
+.access-google-wrap--loading .access-google-pill-btn {
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+/* Your provided official pill asset — this is the visible control (no stacked GIS iframe). */
+.access-google-pill-btn {
+  display: block;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+  border-radius: 19.5px;
+  max-width: 100%;
+  transform-origin: center center;
+}
+
+.access-google-pill-btn:disabled {
+  cursor: not-allowed;
+}
+
+.access-google-pill-btn img {
+  display: block;
+  width: 100%;
+  max-width: 175px;
+  height: auto;
+  vertical-align: top;
+}
+
+.access-google-fallback-host {
+  display: flex;
+  justify-content: center;
+  min-height: 40px;
+}
+
+.access-google-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  background: rgba(5, 5, 5, 0.75);
+  z-index: 4;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #06b6d4;
+  letter-spacing: 0.08em;
+}
+
+.access-google-loading-text {
+  text-transform: uppercase;
+}
+
 .access-gate .form-group {
   display: flex;
   flex-direction: column;
@@ -241,23 +320,6 @@
   width: 2px;
   background: #ec4899;
   box-shadow: 0 0 8px #ec4899;
-}
-
-/* Footer */
-.access-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
-  margin-top: var(--space-lg);
-}
-
-.access-note {
-  text-align: center;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  letter-spacing: 0.05em;
 }
 
 /* (Request modal removed — open signup) */

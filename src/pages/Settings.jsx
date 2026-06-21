@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { HandWaving, Check } from '@phosphor-icons/react';
 import { useProfileStore } from '../context/store';
 import Layout from '../components/Layout';
 import './Settings.css';
@@ -50,7 +51,9 @@ const Settings = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
             >
-              <span className="onboarding-icon">👋</span>
+              <span className="onboarding-icon" aria-hidden>
+                <HandWaving size={28} weight="duotone" />
+              </span>
               <div>
                 <strong>Welcome to Ravenlog!</strong>
                 <p>Fill in your profile once, and we'll auto-fill your bills every time.</p>
@@ -149,7 +152,7 @@ const Settings = () => {
               <button type="submit" className="btn btn-primary btn-lg">
                 {saved ? (
                   <>
-                    <span className="check-icon">✓</span>
+                    <Check className="check-icon" size={18} weight="bold" aria-hidden />
                     Saved!
                   </>
                 ) : (

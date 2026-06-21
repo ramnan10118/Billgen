@@ -1,6 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
+import {
+  ArrowLeft,
+  DiceFive,
+  FilePdf,
+  FilePng,
+  FileJpg,
+} from '@phosphor-icons/react';
 import { useProfileStore, useTemplateDefaultsStore, useUIStore } from '../context/store';
 import { getTemplate } from '../templates/templateConfig';
 import { 
@@ -19,6 +26,7 @@ import { exportBill } from '../utils/exportUtils';
 import { logDownload } from '../utils/downloadLogger';
 import { useAccessStore } from '../context/store';
 import Layout from '../components/Layout';
+import TemplateIcon from '../components/TemplateIcon';
 import BillPreview from '../components/BillPreview';
 import DatePicker from '../components/DatePicker';
 import PaywallModal from '../components/PaywallModal';
@@ -27,12 +35,9 @@ import LogoUpload from '../components/LogoUpload';
 import './Generator.css';
 
 const LOGO_DIMENSION_HINTS = {
-  playo:
-    'Top-left slot is up to ~220×72 px (below the banner). Use @2× assets for sharp export; crop tight so the mark fills the frame.',
-  petrol:
-    'Footer mark matches the receipt logo size: up to ~240×73 px. Crop tight to your symbol—square files with lots of empty border will look small when scaled to fit.',
-  broadband:
-    'Top-right slot is up to ~200×78 px (same scale as the carrier mark). Crop tight; wide or square padding shrinks the visible logo.',
+  playo: '220 × 72 px',
+  petrol: '240 × 73 px',
+  broadband: '200 × 78 px',
 };
 
 const Generator = () => {
@@ -323,19 +328,23 @@ const Generator = () => {
           </div>
         );
         
-      case 'select':
+      case 'select': {
+        const selectOptions =
+          (field.tierOptions && field.tierOptions[Number(tier)]) ||
+          field.options ||
+          [];
         return (
           <select
             id={field.id}
             value={value}
             onChange={(e) => handleChange(field.id, e.target.value)}
           >
-            <option value="">Select {field.label.toLowerCase()}</option>
-            {field.options?.map(opt => (
+            {selectOptions.map(opt => (
               <option key={opt} value={opt}>{opt}</option>
             ))}
           </select>
         );
+      }
 
       case 'toggle':
         return (
@@ -367,8 +376,9 @@ const Generator = () => {
                 className="randomize-btn"
                 onClick={() => handleChange(field.id, autoGenerators[field.autoGenerate]())}
                 title="Randomize"
+                aria-label="Randomize"
               >
-                🎲
+                <DiceFive size={20} weight="duotone" />
               </button>
             </div>
           );
@@ -394,14 +404,15 @@ const Generator = () => {
           animate={{ opacity: 1, y: 0 }}
         >
           <Link to="/home" className="back-link">
-            ← Back to templates
+            <ArrowLeft size={18} weight="bold" className="back-link-icon" aria-hidden />
+            Back to templates
           </Link>
           <div className="header-title">
-            <span 
+            <span
               className="template-icon-badge"
               style={{ '--accent-color': template.color }}
             >
-              {template.icon}
+              <TemplateIcon templateId={template.id} size={26} weight="duotone" />
             </span>
             <h1>{template.name}</h1>
           </div>
@@ -447,21 +458,30 @@ const Generator = () => {
                   onClick={() => handleExport('pdf')}
                   disabled={isExporting}
                 >
-                  {isExporting ? 'Exporting...' : '📄 Download PDF'}
+                  {isExporting ? (
+                    'Exporting...'
+                  ) : (
+                    <>
+                      <FilePdf size={20} weight="duotone" className="export-btn-icon" aria-hidden />
+                      Download PDF
+                    </>
+                  )}
                 </button>
                 <button
                   className="btn btn-secondary export-btn"
                   onClick={() => handleExport('png')}
                   disabled={isExporting}
                 >
-                  🖼️ Download PNG
+                  <FilePng size={20} weight="duotone" className="export-btn-icon" aria-hidden />
+                  Download PNG
                 </button>
                 <button
                   className="btn btn-secondary export-btn"
                   onClick={() => handleExport('jpg')}
                   disabled={isExporting}
                 >
-                  🖼️ Download JPG
+                  <FileJpg size={20} weight="duotone" className="export-btn-icon" aria-hidden />
+                  Download JPG
                 </button>
               </div>
             </div>

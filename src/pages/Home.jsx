@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { Check } from '@phosphor-icons/react';
 import { getAllTemplates } from '../templates/templateConfig';
+import TemplateIcon from '../components/TemplateIcon';
 import { useAccessStore } from '../context/store';
 import Layout from '../components/Layout';
 import './Home.css';
@@ -125,7 +127,7 @@ const Home = () => {
                 className="template-card"
               >
                 <div className="template-icon">
-                  {template.icon}
+                  <TemplateIcon templateId={template.id} size={32} weight="duotone" />
                 </div>
                 <div className="template-info">
                   <h3>{template.name}</h3>
@@ -157,7 +159,9 @@ const Home = () => {
                   onClick={() => toggleVote(option)}
                   disabled={isSubmitted}
                 >
-                  {(isSubmitted || isSelected) && <span className="chip-check">&#10003;</span>}
+                  {(isSubmitted || isSelected) && (
+                    <Check className="chip-check" size={16} weight="bold" aria-hidden />
+                  )}
                   {option}
                 </button>
               );

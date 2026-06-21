@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { X } from '@phosphor-icons/react';
 import { useAccessStore } from '../context/store';
 import { loadRazorpay } from '../utils/razorpay';
 import './SubscriptionExpired.css';
@@ -70,7 +71,14 @@ const RenewalBanner = () => {
       <button className="renewal-banner-btn" onClick={handleRenew} disabled={loading}>
         {loading ? 'Processing...' : 'Renew now'}
       </button>
-      <button className="renewal-banner-dismiss" onClick={() => setDismissed(true)}>✕</button>
+      <button
+        type="button"
+        className="renewal-banner-dismiss"
+        onClick={() => setDismissed(true)}
+        aria-label="Dismiss"
+      >
+        <X size={18} weight="bold" />
+      </button>
     </div>
   );
 };
