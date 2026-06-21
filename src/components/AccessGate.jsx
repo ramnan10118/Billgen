@@ -174,7 +174,7 @@ const AccessGate = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 1.1, duration: 0.3 }}
           >
-            Professional bills and receipts. Instant.
+            Professional bills and receipts.
           </M.p>
         </div>
 
