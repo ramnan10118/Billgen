@@ -4,6 +4,25 @@ All notable changes to RavenLog are recorded here.
 
 ---
 
+## [Unreleased] — subscription-email branch
+
+### Added
+- **Payment confirmation email** — sent immediately after successful ₹149 payment via Resend
+- **Subscription reminder emails** — daily cron job (4 AM UTC) emails users with ≤ 5 days remaining
+- **Monthly bill delivery** — user configures a template + delivery day in Settings; cron job (3 AM UTC) sends a magic link email that opens the app pre-filled and auto-downloads the PDF
+- **Server-side schedule storage** — new "Schedules" tab in Google Sheet (email, templateId, fieldData JSON, deliveryDay, enabled, updatedAt)
+- **Magic link support in Generator** — `?data=BASE64_JSON` URL param pre-fills the form and auto-triggers PDF download after 1.8s
+- **Resend** email service integration (`api/_email.js`)
+- **Vercel cron jobs** in `vercel.json` — reminders at `0 4 * * *`, monthly delivery at `0 3 * * *`
+- `api/save-schedule.js` and `api/get-schedule.js` endpoints
+- Monthly Delivery section in Settings (visible to subscribed users only)
+
+### Environment variables added
+- `RESEND_API_KEY` — Resend API key
+- `VITE_APP_URL` — base URL for magic links (https://ravenlog.in)
+
+---
+
 ## [Unreleased] — google-sign-in branch
 
 ### Added

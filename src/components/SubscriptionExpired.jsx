@@ -17,29 +17,32 @@ const SubscriptionExpired = () => {
     setError('');
 
     try {
-      const res = await fetch(`${API_URL}/api/create-subscription`, {
+      const res = await fetch(`${API_URL}/api/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
 
-      if (!res.ok) throw new Error('Failed to create subscription');
-      const { subscriptionId, keyId } = await res.json();
+      if (!res.ok) throw new Error('Failed to create order');
+      const { orderId, amount, currency, keyId } = await res.json();
 
       const options = {
         key: keyId,
-        subscription_id: subscriptionId,
+        order_id: orderId,
+        amount,
+        currency,
         name: 'Ravenlog',
         description: 'Unlimited document generation — ₹149/month',
         handler: async (response) => {
           try {
-            const verifyRes = await fetch(`${API_URL}/api/verify-payment`, {
+            const verifyRes = await fetch(`${API_URL}/api/verify-order`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_subscription_id: response.razorpay_subscription_id,
                 razorpay_signature: response.razorpay_signature,
+                email,
               }),
             });
 
@@ -47,7 +50,7 @@ const SubscriptionExpired = () => {
             if (result.verified) {
               updateSubscription({
                 isSubscribed: true,
-                subscribedUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                subscribedUntil: result.subscribedUntil,
                 daysRemaining: 30,
                 renewalDue: false,
               });
@@ -60,9 +63,7 @@ const SubscriptionExpired = () => {
         },
         prefill: { email },
         theme: { color: '#06b6d4' },
-        modal: {
-          ondismiss: () => setLoading(false),
-        },
+        modal: { ondismiss: () => setLoading(false) },
       };
 
       const RazorpayClass = await loadRazorpay();

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   ArrowLeft,
@@ -43,7 +43,9 @@ const LOGO_DIMENSION_HINTS = {
 const Generator = () => {
   const { templateId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const previewRef = useRef(null);
+  const magicLinkTriggered = useRef(false);
   
   const template = getTemplate(templateId);
   const { profile } = useProfileStore();
@@ -121,12 +123,34 @@ const Generator = () => {
       }
     });
     
+    // Magic link: ?data=BASE64_JSON overrides defaults
+    const encoded = searchParams.get('data');
+    if (encoded) {
+      try {
+        const overrides = JSON.parse(atob(encoded));
+        Object.assign(initialData, overrides);
+      } catch { /* malformed data param — ignore */ }
+    }
+
     setFormData(initialData);
   }, [templateId, template, profile]);
 
   useEffect(() => {
     setLogoUrl(null);
   }, [templateId]);
+
+  // Auto-download for magic links
+  useEffect(() => {
+    const encoded = searchParams.get('data');
+    if (!encoded || magicLinkTriggered.current) return;
+    magicLinkTriggered.current = true;
+    const timer = setTimeout(() => {
+      handleExport('pdf');
+    }, 1800);
+    return () => clearTimeout(timer);
+  // handleExport is stable within a render; searchParams changes only on URL change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   useEffect(() => {
     if (Number(tier) >= 3) setLogoUrl(null);

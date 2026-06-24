@@ -2,19 +2,53 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { HandWaving, Check } from '@phosphor-icons/react';
-import { useProfileStore } from '../context/store';
+import { useProfileStore, useAccessStore, useTemplateDefaultsStore } from '../context/store';
+import { getAllTemplates } from '../templates/templateConfig';
 import Layout from '../components/Layout';
 import './Settings.css';
+
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 const Settings = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { profile, updateProfile, isProfileComplete } = useProfileStore();
-  
+  const { email, tier, isSubscribed } = useAccessStore();
+  const { getDefaults } = useTemplateDefaultsStore();
+  const templates = getAllTemplates(tier);
+
   const showOnboarding = location.state?.showOnboarding && !isProfileComplete();
-  
+
   const [formData, setFormData] = useState(profile);
   const [saved, setSaved] = useState(false);
+
+  const [schedule, setSchedule] = useState({
+    enabled: false,
+    templateId: templates[0]?.id || '',
+    deliveryDay: 1,
+  });
+  const [scheduleSaved, setScheduleSaved] = useState(false);
+  const [scheduleLoading, setScheduleLoading] = useState(false);
+
+  useEffect(() => {
+    if (!email) return;
+    fetch(`${API_URL}/api/get-schedule`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.found) {
+          setSchedule({
+            enabled: data.enabled,
+            templateId: data.templateId || templates[0]?.id || '',
+            deliveryDay: data.deliveryDay || 1,
+          });
+        }
+      })
+      .catch(() => {});
+  }, [email]);
 
   useEffect(() => {
     setFormData(profile);
@@ -30,11 +64,32 @@ const Settings = () => {
     e.preventDefault();
     updateProfile(formData);
     setSaved(true);
-    
-    // Auto-redirect after onboarding
     if (showOnboarding) {
       setTimeout(() => navigate('/home'), 1000);
     }
+  };
+
+  const handleScheduleSave = async () => {
+    if (!email) return;
+    setScheduleLoading(true);
+    setScheduleSaved(false);
+    try {
+      const fieldData = getDefaults(schedule.templateId);
+      await fetch(`${API_URL}/api/save-schedule`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          templateId: schedule.templateId,
+          fieldData: JSON.stringify(fieldData),
+          deliveryDay: schedule.deliveryDay,
+          enabled: schedule.enabled,
+        }),
+      });
+      setScheduleSaved(true);
+      setTimeout(() => setScheduleSaved(false), 3000);
+    } catch { /* silent */ }
+    setScheduleLoading(false);
   };
 
   return (
@@ -174,10 +229,85 @@ const Settings = () => {
           
           <div className="settings-note">
             <p>
-              <strong>Note:</strong> All data is stored locally on your device. 
-              No data is sent to any server.
+              <strong>Note:</strong> Profile data is stored locally on your device.
             </p>
           </div>
+
+          {isSubscribed && (
+            <div className="settings-section">
+              <div className="settings-header">
+                <h1>Monthly Bill Delivery</h1>
+                <p>Get a pre-filled bill emailed to you every month</p>
+              </div>
+
+              <div className="schedule-form">
+                <div className="form-group schedule-toggle-row">
+                  <label className="toggle-label">
+                    <span>Enable monthly delivery</span>
+                    <button
+                      type="button"
+                      className={`toggle-btn ${schedule.enabled ? 'toggle-btn--on' : ''}`}
+                      onClick={() => setSchedule((s) => ({ ...s, enabled: !s.enabled }))}
+                      aria-pressed={schedule.enabled}
+                    >
+                      <span className="toggle-thumb" />
+                    </button>
+                  </label>
+                </div>
+
+                {schedule.enabled && (
+                  <>
+                    <div className="form-group">
+                      <label htmlFor="scheduleTemplate">Template to send</label>
+                      <select
+                        id="scheduleTemplate"
+                        value={schedule.templateId}
+                        onChange={(e) => setSchedule((s) => ({ ...s, templateId: e.target.value }))}
+                      >
+                        {templates.map((t) => (
+                          <option key={t.id} value={t.id}>{t.name}</option>
+                        ))}
+                      </select>
+                      <span className="form-hint">
+                        Uses the last values you filled in for this template
+                      </span>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="deliveryDay">Day of month to send</label>
+                      <input
+                        id="deliveryDay"
+                        type="number"
+                        min="1"
+                        max="28"
+                        value={schedule.deliveryDay}
+                        onChange={(e) =>
+                          setSchedule((s) => ({
+                            ...s,
+                            deliveryDay: Math.min(28, Math.max(1, parseInt(e.target.value) || 1)),
+                          }))
+                        }
+                      />
+                      <span className="form-hint">1–28 (max 28 to work every month)</span>
+                    </div>
+                  </>
+                )}
+
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleScheduleSave}
+                    disabled={scheduleLoading}
+                  >
+                    {scheduleSaved ? (
+                      <><Check size={18} weight="bold" /> Saved!</>
+                    ) : scheduleLoading ? 'Saving...' : 'Save Schedule'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </motion.div>
       </div>
     </Layout>

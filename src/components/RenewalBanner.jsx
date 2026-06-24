@@ -16,38 +16,44 @@ const RenewalBanner = () => {
   const handleRenew = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/create-subscription`, {
+      const res = await fetch(`${API_URL}/api/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
 
       if (!res.ok) throw new Error('Failed');
-      const { subscriptionId, keyId } = await res.json();
+      const { orderId, amount, currency, keyId } = await res.json();
 
       const options = {
         key: keyId,
-        subscription_id: subscriptionId,
+        order_id: orderId,
+        amount,
+        currency,
         name: 'Ravenlog',
         description: 'Unlimited document generation — ₹149/month',
         handler: async (response) => {
           try {
-            await fetch(`${API_URL}/api/verify-payment`, {
+            const verifyRes = await fetch(`${API_URL}/api/verify-order`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_subscription_id: response.razorpay_subscription_id,
                 razorpay_signature: response.razorpay_signature,
+                email,
               }),
             });
-            updateSubscription({
-              isSubscribed: true,
-              subscribedUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-              daysRemaining: 30,
-              renewalDue: false,
-            });
-          } catch { /* webhook handles it */ }
+            const result = await verifyRes.json();
+            if (result.verified) {
+              updateSubscription({
+                isSubscribed: true,
+                subscribedUntil: result.subscribedUntil,
+                daysRemaining: 30,
+                renewalDue: false,
+              });
+            }
+          } catch { /* silent — UI will revalidate on next load */ }
         },
         prefill: { email },
         theme: { color: '#06b6d4' },

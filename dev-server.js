@@ -19,26 +19,42 @@ app.use((req, res, next) => {
 });
 
 const apiDir = resolve(__dirname, 'api');
-const files = readdirSync(apiDir).filter(f => f.endsWith('.js') && !f.startsWith('_'));
 
-for (const file of files) {
-  const routeName = file.replace('.js', '');
-  const modulePath = `./api/${file}`;
-  const mod = await import(modulePath);
+function collectRoutes(dir, prefix = '') {
+  const entries = readdirSync(dir, { withFileTypes: true });
+  const routes = [];
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      routes.push(...collectRoutes(resolve(dir, entry.name), `${prefix}/${entry.name}`));
+    } else if (entry.name.endsWith('.js') && !entry.name.startsWith('_')) {
+      const routeName = entry.name.replace('.js', '');
+      routes.push({
+        routePath: `/api${prefix}/${routeName}`,
+        filePath: `./api${prefix}/${entry.name}`,
+      });
+    }
+  }
+  return routes;
+}
+
+const routes = collectRoutes(apiDir);
+
+for (const { routePath, filePath } of routes) {
+  const mod = await import(filePath);
   const handler = mod.default;
 
   if (typeof handler === 'function') {
-    app.all(`/api/${routeName}`, async (req, res) => {
+    app.all(routePath, async (req, res) => {
       try {
         await handler(req, res);
       } catch (err) {
-        console.error(`Error in /api/${routeName}:`, err);
+        console.error(`Error in ${routePath}:`, err);
         if (!res.headersSent) {
           res.status(500).json({ error: err.message });
         }
       }
     });
-    console.log(`  /api/${routeName}`);
+    console.log(`  ${routePath}`);
   }
 }
 
