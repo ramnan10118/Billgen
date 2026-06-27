@@ -1,4 +1,5 @@
 import { getSheets, SPREADSHEET_ID } from '../_sheets.js';
+import { sendWelcomeEmail } from '../_email.js';
 
 const DATA_SOURCE = process.env.DATA_SOURCE || 'sheets';
 const SHEET_NAME = 'Sheet1';
@@ -152,6 +153,10 @@ export async function createUser(email, googleId = '') {
     valueInputOption: 'USER_ENTERED',
     requestBody: { values: [newRow] },
   });
+
+  sendWelcomeEmail(normalized).catch(err =>
+    console.error('Welcome email failed:', err)
+  );
 
   return parseRow(newRow);
 }
