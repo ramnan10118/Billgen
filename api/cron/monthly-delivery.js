@@ -1,5 +1,5 @@
 import { getSheets, SPREADSHEET_ID } from '../_sheets.js';
-import { resend, FROM, APP_URL } from '../_email.js';
+import { getResend, FROM, APP_URL } from '../_email.js';
 import { TEMPLATES } from '../../src/templates/templateConfig.js';
 
 const SHEET = 'Schedules';
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       const encoded = Buffer.from(JSON.stringify(fields)).toString('base64');
       const magicLink = `${APP_URL}/generate/${templateId}?data=${encoded}`;
 
-      await resend.emails.send({
+      await getResend().emails.send({
         from: FROM,
         to: email.trim(),
         subject: `Your ${templateName} for ${monthName} is ready`,

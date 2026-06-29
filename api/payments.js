@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import Razorpay from 'razorpay';
 import { updateUser } from './db/users.js';
-import { resend, FROM, APP_URL } from './_email.js';
+import { getResend, FROM, APP_URL } from './_email.js';
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -56,7 +56,7 @@ async function verifyOrder(body, res) {
     day: 'numeric', month: 'long', year: 'numeric',
   });
 
-  resend.emails.send({
+  getResend().emails.send({
     from: FROM,
     to: email,
     subject: 'Payment confirmed — RavenLog access activated',

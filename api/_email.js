@@ -1,11 +1,14 @@
 import { Resend } from 'resend';
 
-export const resend = new Resend(process.env.RESEND_API_KEY);
 export const FROM = 'RavenLog <noreply@ravenlog.in>';
 export const APP_URL = process.env.VITE_APP_URL || 'https://ravenlog.in';
 
+export function getResend() {
+  return new Resend(process.env.RESEND_API_KEY);
+}
+
 export async function sendWelcomeEmail(email) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: 'Welcome to RΛVEN_LOG',

@@ -1,5 +1,5 @@
 import { getSheets, SPREADSHEET_ID } from '../_sheets.js';
-import { resend, FROM, APP_URL } from '../_email.js';
+import { getResend, FROM, APP_URL } from '../_email.js';
 
 export default async function handler(req, res) {
   // Vercel cron calls with GET; allow POST for manual testing
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       const daysRemaining = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
       if (daysRemaining > 0 && daysRemaining <= 5) {
-        await resend.emails.send({
+        await getResend().emails.send({
           from: FROM,
           to: email,
           subject: `Your RavenLog subscription expires in ${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}`,
