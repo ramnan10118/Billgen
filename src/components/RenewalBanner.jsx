@@ -16,10 +16,10 @@ const RenewalBanner = () => {
   const handleRenew = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/create-order`, {
+      const res = await fetch(`${API_URL}/api/payments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ action: 'create-order', email }),
       });
 
       if (!res.ok) throw new Error('Failed');
@@ -34,10 +34,11 @@ const RenewalBanner = () => {
         description: 'Unlimited document generation — ₹149/month',
         handler: async (response) => {
           try {
-            const verifyRes = await fetch(`${API_URL}/api/verify-order`, {
+            const verifyRes = await fetch(`${API_URL}/api/payments`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
+                action: 'verify-order',
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,

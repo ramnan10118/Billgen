@@ -22,6 +22,7 @@ const AcknowledgmentModal = ({ isOpen, email, templateId, onConfirm, onClose }) 
     setSubmitting(true);
 
     const payload = {
+      action: 'log-acknowledgment',
       email: email || '',
       templateId: templateId || '',
       timestamp: new Date().toISOString(),
@@ -29,7 +30,7 @@ const AcknowledgmentModal = ({ isOpen, email, templateId, onConfirm, onClose }) 
 
     let sheetOk = false;
     try {
-      const res = await fetch(`${API_URL}/api/log-acknowledgment`, {
+      const res = await fetch(`${API_URL}/api/activity`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
