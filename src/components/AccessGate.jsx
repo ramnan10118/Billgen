@@ -11,7 +11,6 @@ const M = {
   button: motion.button,
 };
 
-const pillTapTransition = { type: 'spring', stiffness: 400, damping: 17 };
 import { useAccessStore } from '../context/store';
 import { validateGoogleCredential } from '../utils/accessValidation';
 import Banished from './Banished';
@@ -26,7 +25,6 @@ const AccessGate = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [banished, setBanished] = useState(false);
-  const [showGsiFallbackButton, setShowGsiFallbackButton] = useState(false);
 
   const navigate = useNavigate();
   const { setAccess } = useAccessStore();
@@ -34,7 +32,7 @@ const AccessGate = () => {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   const onSuccessRef = useRef(null);
-  const fallbackButtonHostRef = useRef(null);
+  const gsiHostRef = useRef(null);
 
   const handleGoogleSuccess = useCallback(
     async (credentialResponse) => {
@@ -107,9 +105,13 @@ const AccessGate = () => {
     };
   }, [clientId, scriptLoadedSuccessfully]);
 
+  // Render the real Google button into an invisible overlay sitting on top of
+  // the custom pill. Clicking the pill actually clicks this button, which opens
+  // the centered account-chooser popup fast (no One Tap pre-flight / top-right
+  // card) and fires the same initialize() callback with the credential JWT.
   useEffect(() => {
-    if (!showGsiFallbackButton || !scriptLoadedSuccessfully || !clientId) return;
-    const host = fallbackButtonHostRef.current;
+    if (!scriptLoadedSuccessfully || !clientId) return;
+    const host = gsiHostRef.current;
     const id = window.google?.accounts?.id;
     if (!host || !id) return;
 
@@ -126,18 +128,7 @@ const AccessGate = () => {
     return () => {
       host.replaceChildren();
     };
-  }, [showGsiFallbackButton, scriptLoadedSuccessfully, clientId]);
-
-  const handlePillClick = useCallback(() => {
-    setError('');
-    const id = window.google?.accounts?.id;
-    if (!id) return;
-    id.prompt((notification) => {
-      if (notification.isNotDisplayed?.()) {
-        setShowGsiFallbackButton(true);
-      }
-    });
-  }, []);
+  }, [scriptLoadedSuccessfully, clientId]);
 
   if (banished) return <Banished />;
 
@@ -208,28 +199,21 @@ const AccessGate = () => {
               </div>
             )}
             {clientId && (
-              <>
-                <M.button
-                  type="button"
-                  className="access-google-pill-btn"
-                  onClick={handlePillClick}
-                  disabled={isLoading}
-                  aria-label="Sign in with Google"
-                  whileTap={isLoading ? undefined : { scale: 0.94 }}
-                  transition={pillTapTransition}
-                >
-                  <img
-                    src={googleSignInPill}
-                    alt=""
-                    width={GOOGLE_PILL_W}
-                    height={GOOGLE_PILL_H}
-                    draggable={false}
-                  />
-                </M.button>
-                {showGsiFallbackButton && (
-                  <div ref={fallbackButtonHostRef} className="access-google-fallback-host" />
-                )}
-              </>
+              <div
+                className={`access-google-pill ${isLoading ? 'access-google-pill--loading' : ''}`}
+              >
+                <img
+                  className="access-google-pill-img"
+                  src={googleSignInPill}
+                  alt="Sign in with Google"
+                  width={GOOGLE_PILL_W}
+                  height={GOOGLE_PILL_H}
+                  draggable={false}
+                />
+                {/* Invisible real Google button on top — captures the click and
+                    opens the centered account-chooser popup. */}
+                <div ref={gsiHostRef} className="access-google-gsi-overlay" />
+              </div>
             )}
           </div>
         </M.div>

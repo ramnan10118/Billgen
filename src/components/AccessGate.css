@@ -207,41 +207,47 @@
   min-height: 40px;
 }
 
-.access-google-wrap--loading .access-google-pill-btn {
+.access-google-pill--loading {
   pointer-events: none;
   opacity: 0.35;
 }
 
-/* Your provided official pill asset — this is the visible control (no stacked GIS iframe). */
-.access-google-pill-btn {
-  display: block;
-  padding: 0;
-  margin: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  line-height: 0;
-  border-radius: 19.5px;
+/* Visible official pill asset — purely the visual. The click is captured by the
+   invisible real Google button stacked on top (.access-google-gsi-overlay). */
+.access-google-pill {
+  position: relative;
+  width: 175px;
   max-width: 100%;
-  transform-origin: center center;
+  height: 40px;
+  border-radius: 19.5px;
+  cursor: pointer;
 }
 
-.access-google-pill-btn:disabled {
-  cursor: not-allowed;
-}
-
-.access-google-pill-btn img {
+.access-google-pill-img {
   display: block;
   width: 100%;
   max-width: 175px;
   height: auto;
   vertical-align: top;
+  pointer-events: none;
+  user-select: none;
 }
 
-.access-google-fallback-host {
-  display: flex;
-  justify-content: center;
-  min-height: 40px;
+/* Real Google Identity button — invisible, filling the pill so a click anywhere
+   on the pill opens the centered account-chooser popup. */
+.access-google-gsi-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  overflow: hidden;
+  border-radius: 19.5px;
+}
+
+.access-google-gsi-overlay > div,
+.access-google-gsi-overlay iframe {
+  width: 175px !important;
+  height: 40px !important;
+  margin: 0 !important;
 }
 
 .access-google-loading {
