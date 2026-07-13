@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Check, PencilSimple } from '@phosphor-icons/react';
 import { getAllTemplates, getTemplate } from '../templates/templateConfig';
 import TemplateIcon from '../components/TemplateIcon';
+import MonthlyDeliveryPopup from '../components/MonthlyDeliveryPopup';
 import { useAccessStore } from '../context/store';
 import Layout from '../components/Layout';
 import './Home.css';
+
+const MONTHLY_POPUP_SEEN_KEY = 'ravenlog-monthly-popup-seen';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -77,6 +80,7 @@ const submitSuggestion = async (email, suggestion) => {
 };
 
 const Home = () => {
+  const navigate = useNavigate();
   const { email: userEmail, tier } = useAccessStore();
   const templates = getAllTemplates(tier);
   const [schedule, setSchedule] = useState(undefined); // undefined = loading, null = none
@@ -85,6 +89,7 @@ const Home = () => {
   const [customSuggestion, setCustomSuggestion] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [confirmMsg, setConfirmMsg] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     if (!userEmail) { setSchedule(null); return; }
@@ -107,6 +112,25 @@ const Home = () => {
       })
       .catch(() => setSchedule(null));
   }, [userEmail]);
+
+  // Educate returning users about auto-delivery — once ever, and only if they
+  // haven't already set up a schedule (existing users already know the feature).
+  useEffect(() => {
+    if (schedule === undefined || schedule) return;
+    if (localStorage.getItem(MONTHLY_POPUP_SEEN_KEY)) return;
+    setShowPopup(true);
+  }, [schedule]);
+
+  const dismissPopup = () => {
+    localStorage.setItem(MONTHLY_POPUP_SEEN_KEY, '1');
+    setShowPopup(false);
+  };
+
+  const activatePopup = () => {
+    localStorage.setItem(MONTHLY_POPUP_SEEN_KEY, '1');
+    setShowPopup(false);
+    navigate('/setup');
+  };
 
   const toggleVote = (option) => {
     if (submitted.includes(option)) return;
@@ -137,8 +161,13 @@ const Home = () => {
 
   return (
     <Layout>
+      <MonthlyDeliveryPopup
+        isOpen={showPopup}
+        onClose={dismissPopup}
+        onActivate={activatePopup}
+      />
       <div className="home-page">
-        <motion.div 
+        <motion.div
           className="home-header"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
