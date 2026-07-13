@@ -1,14 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Check } from '@phosphor-icons/react';
-import { getAllTemplates } from '../templates/templateConfig';
+import { Check, PencilSimple } from '@phosphor-icons/react';
+import { getAllTemplates, getTemplate } from '../templates/templateConfig';
 import TemplateIcon from '../components/TemplateIcon';
 import { useAccessStore } from '../context/store';
 import Layout from '../components/Layout';
 import './Home.css';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
+
+const MONTHS_ABBR = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+const FREQ_LABELS = { once: 'One time', monthly: 'Every month', bimonthly: 'Every 2 months' };
+
+// The next date this schedule delivers, given its frequency + day-of-month.
+// Bimonthly lands on even-cadence months only (matches the delivery cron).
+function nextDeliveryDate(frequency, deliveryDay, from = new Date()) {
+  const day = Math.min(31, Math.max(1, deliveryDay || 1));
+  const today = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+  const clampDay = (y, m) => Math.min(day, new Date(y, m + 1, 0).getDate());
+  const eligible = (m) => (frequency === 'bimonthly' ? m % 2 === 1 : true);
+
+  let y = from.getFullYear();
+  let m = from.getMonth();
+  let candidate = new Date(y, m, clampDay(y, m));
+  let guard = 0;
+  while ((candidate < today || !eligible(m)) && guard < 36) {
+    m += 1;
+    if (m > 11) { m = 0; y += 1; }
+    candidate = new Date(y, m, clampDay(y, m));
+    guard += 1;
+  }
+  return candidate;
+}
 
 const SUBMITTED_STORAGE_KEY = 'ravenlog-submitted';
 const SUBMITTED_STORAGE_LEGACY = 'billgen-submitted';
@@ -55,11 +79,34 @@ const submitSuggestion = async (email, suggestion) => {
 const Home = () => {
   const { email: userEmail, tier } = useAccessStore();
   const templates = getAllTemplates(tier);
+  const [schedule, setSchedule] = useState(undefined); // undefined = loading, null = none
   const [submitted, setSubmitted] = useState(() => readSubmittedSuggestions());
   const [selected, setSelected] = useState([]);
   const [customSuggestion, setCustomSuggestion] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [confirmMsg, setConfirmMsg] = useState('');
+
+  useEffect(() => {
+    if (!userEmail) { setSchedule(null); return; }
+    fetch(`${API_URL}/api/schedule`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'get', email: userEmail }),
+    })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.found && Array.isArray(d.templates) && d.templates.length) {
+          setSchedule({
+            frequency: d.frequency || 'monthly',
+            deliveryDay: d.deliveryDay || 1,
+            templates: d.templates,
+          });
+        } else {
+          setSchedule(null);
+        }
+      })
+      .catch(() => setSchedule(null));
+  }, [userEmail]);
 
   const toggleVote = (option) => {
     if (submitted.includes(option)) return;
@@ -86,6 +133,8 @@ const Home = () => {
     setTimeout(() => setConfirmMsg(''), 3000);
   };
 
+  const nextDate = schedule ? nextDeliveryDate(schedule.frequency, schedule.deliveryDay) : null;
+
   return (
     <Layout>
       <div className="home-page">
@@ -98,21 +147,64 @@ const Home = () => {
           <p>&gt; Select a template to get started</p>
         </motion.div>
 
-        <motion.div
-          className="coming-soon-banner"
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-        >
-          <div className="cs-title-row">
-            <span className="cs-badge">Coming Soon</span>
-            <h3>Auto-Generate &amp; Email</h3>
-          </div>
-          <p className="cs-description">
-            Set up your details once, pick a schedule, and receive all your bills 
-            auto-generated and delivered straight to your inbox. No more manual downloads.
-          </p>
-        </motion.div>
+        {schedule === undefined ? null : schedule ? (
+          <motion.div
+            className="next-delivery"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="nd-date">
+              <span className="nd-day">{String(nextDate.getDate()).padStart(2, '0')}</span>
+              <span className="nd-month">{MONTHS_ABBR[nextDate.getMonth()]}</span>
+              <span className="nd-year">{nextDate.getFullYear()}</span>
+            </div>
+            <div className="nd-info">
+              <span className="nd-label">Next bill delivery</span>
+              <ul className="nd-bills">
+                {schedule.templates.map((t) => {
+                  const tpl = getTemplate(t.templateId);
+                  if (!tpl) return null;
+                  const splits = Math.max(1, parseInt(t.splits, 10) || 1);
+                  return (
+                    <li key={t.templateId} className="nd-bill">
+                      <span className="nd-bill-icon" style={{ '--accent-color': tpl.color }}>
+                        <TemplateIcon templateId={t.templateId} size={18} weight="duotone" />
+                      </span>
+                      <span className="nd-bill-name">{tpl.name}</span>
+                      {splits > 1 && <span className="nd-bill-count">×{splits}</span>}
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="nd-foot">
+                <span className="nd-freq">{FREQ_LABELS[schedule.frequency] || 'Every month'}</span>
+                <Link to="/setup" className="nd-edit">
+                  <PencilSimple size={14} weight="bold" /> Edit setup
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            className="coming-soon-banner"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="cs-title-row">
+              <span className="cs-badge cs-badge--live">New</span>
+              <h3>Auto-Generate &amp; Email</h3>
+            </div>
+            <p className="cs-description">
+              Set up your details once, pick a monthly budget and schedule, and receive your bills
+              auto-generated with fresh dates and IDs — delivered straight to your inbox.
+            </p>
+            <Link to="/setup" className="btn btn-primary cs-cta">
+              Set up monthly bills &gt;
+            </Link>
+          </motion.div>
+        )}
         
         <div className="templates-grid">
           {templates.map((template, index) => (

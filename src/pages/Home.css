@@ -188,6 +188,188 @@
   margin: 0;
 }
 
+.cs-badge--live {
+  color: #06b6d4;
+  background: rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.35);
+}
+
+.cs-cta {
+  display: inline-block;
+  margin-top: var(--space-md);
+  align-self: flex-start;
+}
+
+/* Next delivery card — shown once a schedule exists */
+.next-delivery {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  padding: var(--space-lg) var(--space-xl);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(6, 182, 212, 0.03) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.28);
+  overflow: hidden;
+}
+
+.next-delivery::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.6), transparent);
+}
+
+.nd-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-right: var(--space-xl);
+  border-right: 1px solid rgba(6, 182, 212, 0.2);
+  min-width: 92px;
+}
+
+.nd-day {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #06b6d4;
+  text-shadow: 0 0 18px rgba(6, 182, 212, 0.4);
+  font-variant-numeric: tabular-nums;
+}
+
+.nd-month {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.2em;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.nd-year {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.nd-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.nd-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #06b6d4;
+}
+
+.nd-bills {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nd-bill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nd-bill-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 2px;
+  color: var(--accent-color, #06b6d4);
+  border: 1px solid var(--border-color);
+  background: #0d0d12;
+  flex-shrink: 0;
+}
+
+.nd-bill-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.nd-bill-count {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+.nd-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(45, 48, 62, 0.6);
+}
+
+.nd-freq {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.nd-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #06b6d4;
+  text-decoration: none;
+}
+
+.nd-edit:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+  .next-delivery {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+  .nd-date {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: 10px;
+    padding-right: 0;
+    padding-bottom: var(--space-md);
+    border-right: none;
+    border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+  }
+  .nd-day {
+    font-size: 2.5rem;
+  }
+}
+
 /* Suggest Section */
 .suggest-section {
   margin-top: var(--space-3xl);

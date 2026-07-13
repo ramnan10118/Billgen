@@ -101,6 +101,7 @@
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   letter-spacing: 0.05em;
+  padding-left: 15px; /* align under the title text, past the accent bar */
 }
 
 /* Form */
@@ -213,11 +214,99 @@
 .schedule-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  padding: 20px var(--space-xl) var(--space-xl);
+}
+
+/* The schedule form uses its own gap; strip the generic form-actions spacing. */
+.schedule-form > .form-actions {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
 }
 
 .schedule-toggle-row {
   margin-bottom: 0;
+}
+
+.schedule-summary {
+  border: 1px solid var(--border-color);
+  border-radius: 2px;
+}
+
+.schedule-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.schedule-summary-row:last-child {
+  border-bottom: none;
+}
+
+.schedule-summary-row span {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.schedule-summary-row strong {
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.schedule-summary-row .status-on {
+  color: #22c55e;
+}
+
+.schedule-summary-row .status-off {
+  color: #ec4899;
+}
+
+.schedule-upsell {
+  color: #f9a8d4;
+}
+
+/* Delete / reset setup */
+.schedule-danger {
+  margin-top: 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-reset {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+}
+
+.btn-reset:hover {
+  color: #ec4899;
+}
+
+.schedule-danger-confirm {
+  border: 1px solid rgba(236, 72, 153, 0.4);
+  border-radius: 2px;
+  padding: 16px;
+  background: rgba(236, 72, 153, 0.05);
+}
+
+.schedule-danger-confirm p {
+  margin: 0 0 14px;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #f9a8d4;
+}
+
+.schedule-danger-confirm .form-actions {
+  margin: 0;
 }
 
 .toggle-label {

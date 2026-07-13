@@ -39,6 +39,15 @@ function parseRow(row) {
     renewalDue = isSubscribed && daysRemaining <= 5;
   }
 
+  // Free-launch flag: treat everyone as subscribed so there's no paywall, no
+  // upsells, and the delivery cron serves all users. Runtime override only —
+  // the Sheet's real subscribedUntil is untouched. Unset FREE_MODE to charge.
+  if (process.env.FREE_MODE === 'true') {
+    isSubscribed = true;
+    renewalDue = false;
+    daysRemaining = daysRemaining && daysRemaining > 0 ? daysRemaining : 3650;
+  }
+
   return {
     email: row[COL.EMAIL] || '',
     googleId: row[COL.GOOGLE_ID] ? String(row[COL.GOOGLE_ID]).trim() : '',

@@ -3,32 +3,22 @@ import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { motion } from 'motion/react';
 import {
   ArrowLeft,
-  DiceFive,
   FilePdf,
   FilePng,
   FileJpg,
 } from '@phosphor-icons/react';
-import { useProfileStore, useTemplateDefaultsStore, useUIStore } from '../context/store';
+import { useTemplateDefaultsStore, useUIStore } from '../context/store';
+import { nameFromEmail } from '../utils/nameFromEmail';
 import { getTemplate } from '../templates/templateConfig';
-import { 
-  getDatePresets, 
-  generateBillNumber, 
-  generateAccountNumber, 
-  generatePlayoId,
-  generateShellTxnId,
-  generateBroadbandReceiptNo,
-  generateBroadbandOrderNo,
-  generatePhonePeTxnId,
-  generateUtrNumber,
-  formatDate 
-} from '../utils/dateHelpers';
+import { getDatePresets } from '../utils/dateHelpers';
+import { AUTO_GENERATORS } from '../utils/recurringBill';
 import { exportBill } from '../utils/exportUtils';
 import { logDownload } from '../utils/downloadLogger';
 import { useAccessStore } from '../context/store';
 import Layout from '../components/Layout';
 import TemplateIcon from '../components/TemplateIcon';
 import BillPreview from '../components/BillPreview';
-import DatePicker from '../components/DatePicker';
+import BillFieldsForm from '../components/BillFieldsForm';
 import PaywallModal from '../components/PaywallModal';
 import AcknowledgmentModal from '../components/AcknowledgmentModal';
 import LogoUpload from '../components/LogoUpload';
@@ -48,7 +38,6 @@ const Generator = () => {
   const magicLinkTriggered = useRef(false);
   
   const template = getTemplate(templateId);
-  const { profile } = useProfileStore();
   const { getDefaults, saveDefaults } = useTemplateDefaultsStore();
   const { isExporting, setExporting } = useUIStore();
   const {
@@ -69,47 +58,23 @@ const Generator = () => {
   const ackBypassed = useRef(false);
   const datePresets = getDatePresets();
 
-  const autoGenerators = {
-    billNumber: generateBillNumber,
-    accountNumber: generateAccountNumber,
-    playoId: generatePlayoId,
-    shellTxnId: generateShellTxnId,
-    broadbandReceiptNo: generateBroadbandReceiptNo,
-    broadbandOrderNo: generateBroadbandOrderNo,
-    phonePeTxnId: generatePhonePeTxnId,
-    utrNumber: generateUtrNumber,
-  };
-
   // Initialize form with profile, defaults, and auto-generated values
   useEffect(() => {
     if (!template) return;
-    
+
     const rawDefaults = getDefaults(templateId);
     const savedDefaults = { ...rawDefaults };
     const initialData = {};
-    
+
     template.fields.forEach(field => {
-      // Priority: saved defaults > profile data > auto-generated > field default > empty
+      const autoGen = field.autoGenerate && AUTO_GENERATORS[field.autoGenerate];
+      // Priority: saved defaults > derived name > auto-generated > field default > empty
       if (savedDefaults[field.id]) {
         initialData[field.id] = savedDefaults[field.id];
-      } else if (field.profileKey && profile[field.profileKey]) {
-        initialData[field.id] = profile[field.profileKey];
-      } else if (field.autoGenerate === 'billNumber') {
-        initialData[field.id] = generateBillNumber();
-      } else if (field.autoGenerate === 'accountNumber') {
-        initialData[field.id] = generateAccountNumber();
-      } else if (field.autoGenerate === 'playoId') {
-        initialData[field.id] = generatePlayoId();
-      } else if (field.autoGenerate === 'shellTxnId') {
-        initialData[field.id] = generateShellTxnId();
-      } else if (field.autoGenerate === 'broadbandReceiptNo') {
-        initialData[field.id] = generateBroadbandReceiptNo();
-      } else if (field.autoGenerate === 'broadbandOrderNo') {
-        initialData[field.id] = generateBroadbandOrderNo();
-      } else if (field.autoGenerate === 'phonePeTxnId') {
-        initialData[field.id] = generatePhonePeTxnId();
-      } else if (field.autoGenerate === 'utrNumber') {
-        initialData[field.id] = generateUtrNumber();
+      } else if (field.profileKey === 'fullName' && nameFromEmail(userEmail)) {
+        initialData[field.id] = nameFromEmail(userEmail);
+      } else if (autoGen) {
+        initialData[field.id] = autoGen();
       } else if (field.type === 'toggle') {
         initialData[field.id] = field.default !== undefined ? field.default : true;
       } else if (field.default) {
@@ -123,28 +88,33 @@ const Generator = () => {
       }
     });
     
-    // Magic link: ?data=BASE64_JSON overrides defaults
+    // Magic link: ?data=BASE64URL_JSON overrides defaults. Accept base64url
+    // (what the cron now emits) and legacy standard base64 from older links.
     const encoded = searchParams.get('data');
     if (encoded) {
       try {
-        const overrides = JSON.parse(atob(encoded));
+        const b64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+        const overrides = JSON.parse(atob(b64));
         Object.assign(initialData, overrides);
       } catch { /* malformed data param — ignore */ }
     }
 
     setFormData(initialData);
-  }, [templateId, template, profile]);
+  }, [templateId, template, userEmail]);
 
   useEffect(() => {
     setLogoUrl(null);
   }, [templateId]);
 
-  // Auto-download for magic links
+  // Auto-download for magic links. Flip the guard only when the download
+  // actually fires — arming the timer in the effect body would let StrictMode's
+  // dev double-invoke (mount → cleanup → mount) set the guard and cancel the
+  // timer before it ever runs, silently disabling auto-download in dev.
   useEffect(() => {
     const encoded = searchParams.get('data');
     if (!encoded || magicLinkTriggered.current) return;
-    magicLinkTriggered.current = true;
     const timer = setTimeout(() => {
+      magicLinkTriggered.current = true;
       handleExport('pdf');
     }, 1800);
     return () => clearTimeout(timer);
@@ -182,19 +152,6 @@ const Generator = () => {
 
   const handleChange = (fieldId, value) => {
     setFormData(prev => ({ ...prev, [fieldId]: value }));
-  };
-
-  const handleDatePreset = (fieldId, preset) => {
-    if (preset === 'today') {
-      handleChange(fieldId, datePresets.today);
-    } else if (preset === 'dueDate') {
-      handleChange(fieldId, datePresets.defaultDueDate);
-    }
-  };
-
-  const handlePeriodPreset = (fieldId, preset) => {
-    const presetData = preset === 'current' ? datePresets.currentMonth : datePresets.lastMonth;
-    handleChange(fieldId, presetData.label);
   };
 
   const handleExport = async (format) => {
@@ -259,166 +216,6 @@ const Generator = () => {
     });
   };
 
-  // Check if a field should be visible based on showWhen condition
-  const shouldShowField = (field) => {
-    if (!field.showWhen) return true;
-    const { field: dependentField, value: expectedValue } = field.showWhen;
-    return formData[dependentField] === expectedValue;
-  };
-
-  const renderField = (field) => {
-    const value = formData[field.id] || '';
-    
-    switch (field.type) {
-      case 'textarea':
-        return (
-          <textarea
-            id={field.id}
-            value={value}
-            onChange={(e) => handleChange(field.id, e.target.value)}
-            placeholder={`Enter ${field.label.toLowerCase()}`}
-            rows={3}
-          />
-        );
-        
-      case 'number':
-      case 'currency':
-        return (
-          <input
-            id={field.id}
-            type="number"
-            value={value}
-            onChange={(e) => handleChange(field.id, e.target.value)}
-            placeholder={field.type === 'currency' ? '0.00' : '0'}
-            min="0"
-            step={field.type === 'currency' ? '0.01' : '1'}
-          />
-        );
-        
-      case 'date':
-        return (
-          <div className="field-with-presets">
-            <DatePicker
-              value={value}
-              onChange={(val) => handleChange(field.id, val)}
-            />
-            <div className="field-presets">
-              <button
-                type="button"
-                className="preset-btn"
-                onClick={() => handleDatePreset(field.id, 'today')}
-              >
-                Today
-              </button>
-              {field.id.toLowerCase().includes('due') && (
-                <button
-                  type="button"
-                  className="preset-btn"
-                  onClick={() => handleDatePreset(field.id, 'dueDate')}
-                >
-                  +15 days
-                </button>
-              )}
-            </div>
-          </div>
-        );
-        
-      case 'period':
-        return (
-          <div className="field-with-presets">
-            <input
-              id={field.id}
-              type="text"
-              value={value}
-              onChange={(e) => handleChange(field.id, e.target.value)}
-              placeholder="e.g., January 2024"
-            />
-            <div className="field-presets">
-              <button
-                type="button"
-                className="preset-btn"
-                onClick={() => handlePeriodPreset(field.id, 'last')}
-              >
-                Last Month
-              </button>
-              <button
-                type="button"
-                className="preset-btn"
-                onClick={() => handlePeriodPreset(field.id, 'current')}
-              >
-                This Month
-              </button>
-            </div>
-          </div>
-        );
-        
-      case 'select': {
-        const selectOptions =
-          (field.tierOptions && field.tierOptions[Number(tier)]) ||
-          field.options ||
-          [];
-        return (
-          <select
-            id={field.id}
-            value={value}
-            onChange={(e) => handleChange(field.id, e.target.value)}
-          >
-            {selectOptions.map(opt => (
-              <option key={opt} value={opt}>{opt}</option>
-            ))}
-          </select>
-        );
-      }
-
-      case 'toggle':
-        return (
-          <label className="toggle-field">
-            <input
-              id={field.id}
-              type="checkbox"
-              checked={value === true || value === 'true'}
-              onChange={(e) => handleChange(field.id, e.target.checked)}
-            />
-            <span className="toggle-slider"></span>
-            <span className="toggle-label">{value ? 'Enabled' : 'Disabled'}</span>
-          </label>
-        );
-        
-      default:
-        if (field.autoGenerate && autoGenerators[field.autoGenerate]) {
-          return (
-            <div className="field-with-randomize">
-              <input
-                id={field.id}
-                type="text"
-                value={value}
-                onChange={(e) => handleChange(field.id, e.target.value)}
-                placeholder={`Enter ${field.label.toLowerCase()}`}
-              />
-              <button
-                type="button"
-                className="randomize-btn"
-                onClick={() => handleChange(field.id, autoGenerators[field.autoGenerate]())}
-                title="Randomize"
-                aria-label="Randomize"
-              >
-                <DiceFive size={20} weight="duotone" />
-              </button>
-            </div>
-          );
-        }
-        return (
-          <input
-            id={field.id}
-            type="text"
-            value={value}
-            onChange={(e) => handleChange(field.id, e.target.value)}
-            placeholder={`Enter ${field.label.toLowerCase()}`}
-          />
-        );
-    }
-  };
-
   return (
     <Layout>
       <div className="generator-page">
@@ -452,14 +249,12 @@ const Generator = () => {
             <div className="form-section">
               <h3>Bill Details</h3>
               <form className="generator-form">
-                {template.fields.map(field => (
-                  shouldShowField(field) && (
-                    <div key={field.id} className="form-group">
-                      <label htmlFor={field.id}>{field.label}</label>
-                      {renderField(field)}
-                    </div>
-                  )
-                ))}
+                <BillFieldsForm
+                  fields={template.fields}
+                  values={formData}
+                  onChange={handleChange}
+                  tier={tier}
+                />
               </form>
             </div>
 

@@ -43,12 +43,19 @@ const Layout = ({ children }) => {
           </Link>
           
           <nav className="nav">
-            <Link 
-              to="/home" 
+            <Link
+              to="/home"
               className={`nav-link ${isActive('/home') ? 'active' : ''}`}
             >
               <span className="nav-link-text">Templates</span>
               {isActive('/home') && <div className="nav-active-bar" />}
+            </Link>
+            <Link
+              to="/settings"
+              className={`nav-link ${isActive('/settings') ? 'active' : ''}`}
+            >
+              <span className="nav-link-text">Bill Delivery Settings</span>
+              {isActive('/settings') && <div className="nav-active-bar" />}
             </Link>
           </nav>
           

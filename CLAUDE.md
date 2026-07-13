@@ -217,8 +217,10 @@ When migrating: create Supabase table with same schema → one-time sync script 
 ```bash
 npm install
 cp .env.example .env   # fill in GOOGLE_SHEET_ID, service account, Razorpay, Google client ID
+npm run dev:full       # runs both: vite frontend on :5173 + API dev server on :3001
+# or run them separately:
 npm run dev            # frontend on :5173
-node api/server.js     # local API server on :3001 (VITE_API_URL=http://localhost:3001)
+node dev-server.js     # local API server on :3001 (VITE_API_URL=http://localhost:3001)
 ```
 
 Vercel handles deployment — `api/` folder maps to serverless functions automatically.

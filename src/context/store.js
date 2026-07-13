@@ -19,45 +19,6 @@ function storageWithLegacy(legacyKey) {
   }));
 }
 
-// Profile store - persisted to localStorage
-export const useProfileStore = create(
-  persist(
-    (set, get) => ({
-      profile: {
-        fullName: '',
-        address: '',
-        phone: '',
-        email: '',
-        driverName: '',
-        vehicleNumber: '',
-      },
-      isProfileComplete: () => {
-        const { profile } = get();
-        return profile.fullName && profile.address;
-      },
-      updateProfile: (updates) =>
-        set((state) => ({
-          profile: { ...state.profile, ...updates },
-        })),
-      resetProfile: () =>
-        set({
-          profile: {
-            fullName: '',
-            address: '',
-            phone: '',
-            email: '',
-            driverName: '',
-            vehicleNumber: '',
-          },
-        }),
-    }),
-    {
-      name: 'ravenlog-profile',
-      storage: storageWithLegacy('billgen-profile'),
-    }
-  )
-);
-
 // Access store - persisted to localStorage
 export const useAccessStore = create(
   persist(
@@ -178,9 +139,7 @@ export const useTemplateDefaultsStore = create(
 export const useUIStore = create((set) => ({
   isExporting: false,
   exportFormat: 'pdf',
-  showOnboarding: false,
 
   setExporting: (isExporting) => set({ isExporting }),
   setExportFormat: (exportFormat) => set({ exportFormat }),
-  setShowOnboarding: (showOnboarding) => set({ showOnboarding }),
 }));

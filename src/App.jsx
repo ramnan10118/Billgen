@@ -11,6 +11,8 @@ import RenewalBanner from './components/RenewalBanner';
 import Home from './pages/Home';
 import Settings from './pages/Settings';
 import Generator from './pages/Generator';
+import SetupWizard from './pages/SetupWizard';
+import DownloadBills from './pages/DownloadBills';
 import Terms from './pages/Terms';
 
 import './styles/index.css';
@@ -113,6 +115,7 @@ function App() {
       <Routes>
         <Route path="/" element={<AccessGate />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/download" element={<DownloadBills />} />
 
         <Route
           path="/home"
@@ -138,7 +141,15 @@ function App() {
             </ProtectedRoute>
           }
         />
-        
+        <Route
+          path="/setup"
+          element={
+            <ProtectedRoute>
+              <SetupWizard />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
