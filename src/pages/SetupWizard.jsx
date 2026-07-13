@@ -155,20 +155,12 @@ const SetupWizard = () => {
     }));
   };
 
-  // Live example of the date window, referenced to the NEXT delivery date so it
-  // always shows the upcoming cycle (rolls to next month if this month's day
-  // has already passed).
+  // Live example of the date window: delivery day of the PREVIOUS month → the
+  // delivery day of the CURRENT month (e.g. day 12 in July → 12 Jun to 12 Jul).
+  // Always anchored to the current calendar month, matching how the cron dates
+  // bills when it runs on the delivery day.
   const cycle = useMemo(() => {
-    const now = new Date();
-    const day = Math.min(31, Math.max(1, deliveryDay || 1));
-    const lastOf = (y, m) => new Date(y, m + 1, 0).getDate();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    let ref = new Date(now.getFullYear(), now.getMonth(), Math.min(day, lastOf(now.getFullYear(), now.getMonth())));
-    if (ref < todayStart) {
-      const m = now.getMonth() + 1;
-      ref = new Date(now.getFullYear(), m, Math.min(day, lastOf(now.getFullYear(), m)));
-    }
-    const { start, end } = billDateRange(frequency, deliveryDay, ref);
+    const { start, end } = billDateRange(frequency, deliveryDay, new Date());
     const fmt = (d) => d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
     return {
       start: fmt(start),
